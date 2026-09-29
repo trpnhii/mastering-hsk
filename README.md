@@ -6,12 +6,13 @@ Vocabulary sheets and source scripts for the HSK learning path.
 
 This branch contains generated vocabulary materials for:
 
-- `hsk1/`: Hán 1 / 汉语教程 第一册（上） source PDF, generated PDF/HTML/CSV, and generator script.
-- `hsk2/`: Hán 2 / 汉语教程 第一册（下） source PDF, generated PDF/HTML/CSV, and generator script.
-- Repository root: combined Hán 1 + Hán 2 PDF/HTML/CSV.
-- `docs/`: flashcard web app for GitHub Pages (quiz 2 chế độ).
+- `hsk1/`: Hán 1 / 汉语教程 第一册（上）
+- `hsk2/`: Hán 2 / 汉语教程 第一册（下）
+- `hsk3/`: Hán 3 / 汉语教程 第二册
+- Repository root: combined Hán 1 + Hán 2 + Hán 3 PDF/HTML/CSV (`Han1_Han2_Han3_tu_vung_gop.*`)
+- `docs/`: flashcard web app for GitHub Pages
 
-Numbering is continuous inside each book file, and continuous from Hán 1 into Hán 2 in the combined files.
+Numbering is continuous inside each book file, and continuous across Hán 1 → 2 → 3 in the combined files.
 
 ## Flashcards (GitHub Pages)
 
@@ -20,7 +21,9 @@ App nằm trong `docs/`:
 - Tab **Hán tự → Nghĩa**: hiện chữ Hán, chọn nghĩa đúng (nút hiện/ẩn pinyin)
 - Tab **Pinyin + Nghĩa → Hán tự**: hiện pinyin + nghĩa, chọn Hán tự đúng
 - Tab **Câu → Nghĩa**: hiện câu Hán ngắn (HSK 3), chọn bản dịch; có nút hiện/ẩn pinyin
-- Lọc theo sách / bài (tab từ); ngân hàng mục sai để ôn lại; phím `1–4` / `Enter` / `Space`
+- Tab **Nhật ký**: session hiện tại, danh sách đã xem pinyin, tag, lịch sử các lượt ôn
+- Mỗi lần ôn là 1 session (lưu local); bấm **Hiện pinyin** sẽ ghi vào nhật ký; **Gắn tag** chủ động (khó / hay quên / cần ôn / quan trọng / tự nhập)
+- Lọc theo sách / bài (Hán 1–3); ngân hàng mục sai để ôn lại; phím `1–4` / `Enter` / `Space`
 
 Câu dịch nằm trong `docs/sentences.json` — thêm object `{ id, hanzi, pinyin, meaning, level }` để mở rộng.
 

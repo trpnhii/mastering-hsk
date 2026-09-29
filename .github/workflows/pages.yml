@@ -12,7 +12,7 @@ on:
       - road-to-hsk3
     paths:
       - "docs/**"
-      - "Han1_Han2_tu_vung_gop.csv"
+      - "Han1_Han2_Han3_tu_vung_gop.csv"
       - ".github/workflows/pages.yml"
   workflow_dispatch:
 

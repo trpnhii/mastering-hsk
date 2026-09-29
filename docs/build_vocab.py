@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Regenerate docs/vocab.json from Han1_Han2_tu_vung_gop.csv."""
+"""Regenerate docs/vocab.json from Han1_Han2_Han3_tu_vung_gop.csv."""
 from __future__ import annotations
 
 import csv
@@ -7,7 +7,7 @@ import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-CSV_PATH = ROOT / "Han1_Han2_tu_vung_gop.csv"
+CSV_PATH = ROOT / "Han1_Han2_Han3_tu_vung_gop.csv"
 OUT_PATH = ROOT / "docs" / "vocab.json"
 
 

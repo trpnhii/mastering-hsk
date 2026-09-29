@@ -79,7 +79,7 @@ body {
 
 .tabs {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   border-bottom: 1px solid var(--line);
   background: #fbfcfe;
 }
@@ -319,6 +319,94 @@ select:focus {
   background: var(--teal-soft);
   border-color: var(--teal);
 }
+.prompt .card-tools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  margin-top: 14px;
+}
+.prompt .card-tools .pinyin-toggle { margin-top: 0; }
+.tag-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: center;
+  margin-top: 10px;
+}
+.tag-chip {
+  appearance: none;
+  border: 1px solid var(--line);
+  background: #fff;
+  color: var(--muted);
+  border-radius: 999px;
+  padding: 5px 10px;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.tag-chip.on {
+  border-color: var(--teal);
+  background: var(--teal-soft);
+  color: var(--teal-dark);
+}
+.tag-chip.custom {
+  border-style: dashed;
+}
+.item-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 4px;
+}
+.item-tags span {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--teal-dark);
+  background: var(--teal-soft);
+  border-radius: 999px;
+  padding: 2px 8px;
+}
+
+.quiz-chrome[hidden], .journal-only[hidden] { display: none !important; }
+
+.journal-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 14px 18px 0;
+}
+.journal-nav .btn.compact.active {
+  background: var(--teal);
+  color: #fff;
+  border-color: var(--teal);
+}
+.session-card {
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 12px 14px;
+  background: #fff;
+  text-align: left;
+}
+.session-card h3 {
+  margin: 0 0 6px;
+  font-size: 15px;
+}
+.session-card p {
+  margin: 0;
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.45;
+}
+.session-card .row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+  margin-top: 8px;
+  font-size: 12px;
+  color: var(--ink);
+}
 
 .choices {
   display: grid;
@@ -435,69 +523,95 @@ select:focus {
     <header class="brand">
       <div class="eyebrow">Mastering HSK</div>
       <h1>Flashcards ôn thi</h1>
-      <p>Ôn từ vựng hai chiều, và luyện dịch câu ngắn kiểu HSK 3. Lọc theo sách / bài khi ôn từ; câu dịch dùng bộ câu riêng (dễ bổ sung sau).</p>
+      <p>Ôn từ, dịch câu ngắn HSK 3, lưu session / câu đã xem pinyin, và gắn tag để ôn có chủ đích.</p>
     </header>
 
     <section class="panel" aria-live="polite">
       <div class="tabs" role="tablist">
-        <button class="tab active" id="tab-meaning" role="tab" aria-selected="true" data-mode="meaning">Hán tự → Nghĩa</button>
-        <button class="tab" id="tab-hanzi" role="tab" aria-selected="false" data-mode="hanzi">Pinyin + Nghĩa → Hán tự</button>
-        <button class="tab" id="tab-sentence" role="tab" aria-selected="false" data-mode="sentence">Câu → Nghĩa</button>
+        <button class="tab active" role="tab" aria-selected="true" data-mode="meaning">Hán tự → Nghĩa</button>
+        <button class="tab" role="tab" aria-selected="false" data-mode="hanzi">Pinyin + Nghĩa → Hán tự</button>
+        <button class="tab" role="tab" aria-selected="false" data-mode="sentence">Câu → Nghĩa</button>
+        <button class="tab" role="tab" aria-selected="false" data-mode="journal">Nhật ký</button>
       </div>
 
-      <div class="controls" id="vocabFilters">
-        <div class="control-row">
-          <label>Sách
-            <select id="bookFilter">
-              <option value="all">Tất cả (Hán 1 + Hán 2)</option>
-              <option value="Hán 1">Hán 1</option>
-              <option value="Hán 2">Hán 2</option>
-            </select>
-          </label>
-          <label>Bài
-            <select id="lessonFilter">
-              <option value="all">Tất cả các bài</option>
-            </select>
-          </label>
+      <div class="quiz-chrome" id="quizChrome">
+        <div class="controls" id="vocabFilters">
+          <div class="control-row">
+            <label>Sách
+              <select id="bookFilter">
+                <option value="all">Tất cả (Hán 1 + 2 + 3)</option>
+                <option value="Hán 1">Hán 1</option>
+                <option value="Hán 2">Hán 2</option>
+                <option value="Hán 3">Hán 3</option>
+              </select>
+            </label>
+            <label>Bài
+              <select id="lessonFilter">
+                <option value="all">Tất cả các bài</option>
+              </select>
+            </label>
+          </div>
         </div>
-      </div>
-      <div class="controls" id="sentenceFilters" hidden>
-        <div class="control-row">
-          <label>Bộ câu
-            <select id="sentenceFilter" disabled>
-              <option value="all">Câu ngắn HSK 3 (mẫu — sẽ bổ sung)</option>
-            </select>
-          </label>
+        <div class="controls" id="sentenceFilters" hidden>
+          <div class="control-row">
+            <label>Bộ câu
+              <select id="sentenceFilter" disabled>
+                <option value="all">Câu ngắn HSK 3 (mẫu — sẽ bổ sung)</option>
+              </select>
+            </label>
+          </div>
         </div>
+
+        <div class="stats">
+          <span>Đúng: <strong id="scoreCorrect">0</strong></span>
+          <span>Sai: <strong id="scoreWrong">0</strong></span>
+          <span>Chuỗi: <strong id="scoreStreak">0</strong></span>
+          <span>Còn lại: <strong id="scoreLeft">0</strong></span>
+        </div>
+        <div class="wrong-bar">
+          <span class="count"><span id="wrongBankLabel">Từ sai cần ôn</span>: <strong id="wrongBankCount">0</strong></span>
+          <button class="btn compact accent" type="button" id="btnReviewWrong" disabled>Ôn lại</button>
+          <button class="btn compact ghost" type="button" id="btnShowWrong" disabled>Danh sách</button>
+          <button class="btn compact danger-ghost" type="button" id="btnClearWrong" disabled>Xóa</button>
+        </div>
+        <div class="review-banner" id="reviewBanner" hidden>Đang ôn lại các mục đã trả lời sai — trả lời đúng sẽ gỡ khỏi danh sách.</div>
+        <div class="progress" aria-hidden="true"><span id="progressBar"></span></div>
       </div>
 
-      <div class="stats">
-        <span>Đúng: <strong id="scoreCorrect">0</strong></span>
-        <span>Sai: <strong id="scoreWrong">0</strong></span>
-        <span>Chuỗi: <strong id="scoreStreak">0</strong></span>
-        <span>Còn lại: <strong id="scoreLeft">0</strong></span>
+      <div class="journal-only" id="journalChrome" hidden>
+        <div class="journal-nav" id="journalNav">
+          <button class="btn compact ghost active" type="button" data-journal="session">Session hiện tại</button>
+          <button class="btn compact ghost" type="button" data-journal="pinyin">Đã xem pinyin</button>
+          <button class="btn compact ghost" type="button" data-journal="tags">Đã gắn tag</button>
+          <button class="btn compact ghost" type="button" data-journal="history">Lịch sử</button>
+        </div>
       </div>
-      <div class="wrong-bar">
-        <span class="count"><span id="wrongBankLabel">Từ sai cần ôn</span>: <strong id="wrongBankCount">0</strong></span>
-        <button class="btn compact accent" type="button" id="btnReviewWrong" disabled>Ôn lại</button>
-        <button class="btn compact ghost" type="button" id="btnShowWrong" disabled>Danh sách</button>
-        <button class="btn compact danger-ghost" type="button" id="btnClearWrong" disabled>Xóa</button>
-      </div>
-      <div class="review-banner" id="reviewBanner" hidden>Đang ôn lại các mục đã trả lời sai — trả lời đúng sẽ gỡ khỏi danh sách.</div>
-      <div class="progress" aria-hidden="true"><span id="progressBar"></span></div>
 
       <div class="stage" id="stage">
         <div class="loading">Đang tải dữ liệu…</div>
       </div>
     </section>
 
-    <p class="footer-note">Từ: <code>vocab.json</code> · Câu: <code>sentences.json</code> · phím 1–4 chọn đáp án, Enter / Space câu tiếp</p>
+    <p class="footer-note">Từ: <code>vocab.json</code> · Câu: <code>sentences.json</code> · phím 1–4 / Enter / Space · session + tag lưu local</p>
   </main>
 
 <script>
 (() => {
   const CHOICE_COUNT = 4;
-  const STORAGE_KEY = "hsk-flashcards-wrong-v1";
+  const PRESET_TAGS = ["khó", "hay quên", "cần ôn", "quan trọng"];
+  const KEYS = {
+    wrong: "hsk-flashcards-wrong-v1",
+    tags: "hsk-flashcards-tags-v1",
+    history: "hsk-flashcards-history-v1",
+    pinyinHelp: "hsk-flashcards-pinyin-help-v1",
+    session: "hsk-flashcards-session-v1",
+  };
+  const MODE_LABEL = {
+    meaning: "Hán tự → Nghĩa",
+    hanzi: "Pinyin + Nghĩa → Hán tự",
+    sentence: "Câu → Nghĩa",
+  };
+
   let allWords = [];
   let allSentences = [];
   let pool = [];
@@ -505,16 +619,23 @@ select:focus {
   let current = null;
   let choices = [];
   let answered = false;
-  let mode = "meaning"; // meaning | hanzi | sentence
+  let mode = "meaning"; // meaning | hanzi | sentence | journal
+  let journalView = "session"; // session | pinyin | tags | history
   let showPinyin = false;
+  let showTagPicker = false;
   let reviewingWrong = false;
+  let reviewingPinyin = false;
   let correct = 0;
   let wrong = 0;
   let streak = 0;
   let bestStreak = 0;
   let sessionTotal = 0;
-  /** @type {{ meaning: number[], hanzi: number[], sentence: number[] }} */
-  let wrongBank = loadWrongBank();
+  let currentSession = null;
+
+  let wrongBank = loadJSON(KEYS.wrong, { meaning: [], hanzi: [], sentence: [] });
+  let tagMap = loadJSON(KEYS.tags, {});
+  let history = loadJSON(KEYS.history, []);
+  let pinyinHelp = loadJSON(KEYS.pinyinHelp, { meaning: [], sentence: [] });
 
   const els = {
     stage: document.getElementById("stage"),
@@ -522,6 +643,9 @@ select:focus {
     lesson: document.getElementById("lessonFilter"),
     vocabFilters: document.getElementById("vocabFilters"),
     sentenceFilters: document.getElementById("sentenceFilters"),
+    quizChrome: document.getElementById("quizChrome"),
+    journalChrome: document.getElementById("journalChrome"),
+    journalNav: document.getElementById("journalNav"),
     scoreCorrect: document.getElementById("scoreCorrect"),
     scoreWrong: document.getElementById("scoreWrong"),
     scoreStreak: document.getElementById("scoreStreak"),
@@ -536,83 +660,215 @@ select:focus {
     tabs: [...document.querySelectorAll(".tab")],
   };
 
-  function isSentenceMode() {
-    return mode === "sentence";
-  }
-
-  function itemLabel() {
-    return isSentenceMode() ? "câu" : "từ";
-  }
-
-  function activeBank() {
-    return isSentenceMode() ? allSentences : allWords;
-  }
-
-  function loadWrongBank() {
+  function loadJSON(key, fallback) {
     try {
-      const raw = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
-      return {
-        meaning: Array.isArray(raw.meaning) ? raw.meaning.map(Number) : [],
-        hanzi: Array.isArray(raw.hanzi) ? raw.hanzi.map(Number) : [],
-        sentence: Array.isArray(raw.sentence) ? raw.sentence.map(Number) : [],
-      };
+      const raw = JSON.parse(localStorage.getItem(key) || "null");
+      return raw == null ? structuredClone(fallback) : raw;
     } catch {
-      return { meaning: [], hanzi: [], sentence: [] };
+      return structuredClone(fallback);
     }
   }
 
-  function saveWrongBank() {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(wrongBank));
-    updateWrongBar();
+  function saveJSON(key, value) {
+    localStorage.setItem(key, JSON.stringify(value));
+  }
+
+  function isJournal() { return mode === "journal"; }
+  function isSentenceMode() { return mode === "sentence"; }
+  function isQuizMode() { return mode === "meaning" || mode === "hanzi" || mode === "sentence"; }
+  function itemLabel() { return isSentenceMode() || reviewingPinyin && currentSession?.mode === "sentence" ? "câu" : (mode === "sentence" ? "câu" : "từ"); }
+  function quizItemLabel() { return mode === "sentence" ? "câu" : "từ"; }
+
+  function activeBank() {
+    return mode === "sentence" || (reviewingPinyin && pool[0] && !pool[0].book)
+      ? allSentences
+      : (mode === "sentence" ? allSentences : allWords);
+  }
+
+  function bankForMode(m) {
+    return m === "sentence" ? allSentences : allWords;
+  }
+
+  function tagKey(m, id) { return `${m}:${id}`; }
+
+  function getTags(m, id) {
+    return tagMap[tagKey(m, id)] || [];
+  }
+
+  function setTags(m, id, tags) {
+    const key = tagKey(m, id);
+    const clean = [...new Set(tags.map((t) => t.trim()).filter(Boolean))];
+    if (clean.length) tagMap[key] = clean;
+    else delete tagMap[key];
+    saveJSON(KEYS.tags, tagMap);
+    if (currentSession && isQuizMode()) {
+      currentSession.tagEvents = currentSession.tagEvents || [];
+      currentSession.tagEvents.push({ id, mode: m, tags: clean, at: Date.now() });
+      persistSession();
+    }
+  }
+
+  function toggleTag(m, id, tag) {
+    const cur = getTags(m, id);
+    setTags(m, id, cur.includes(tag) ? cur.filter((t) => t !== tag) : [...cur, tag]);
+  }
+
+  function persistSession() {
+    saveJSON(KEYS.session, currentSession);
+  }
+
+  function ensureWrongShape() {
+    for (const m of ["meaning", "hanzi", "sentence"]) {
+      if (!Array.isArray(wrongBank[m])) wrongBank[m] = [];
+    }
+  }
+
+  function ensurePinyinShape() {
+    if (!Array.isArray(pinyinHelp.meaning)) pinyinHelp.meaning = [];
+    if (!Array.isArray(pinyinHelp.sentence)) pinyinHelp.sentence = [];
   }
 
   function wrongIds() {
+    ensureWrongShape();
     if (!wrongBank[mode]) wrongBank[mode] = [];
     return wrongBank[mode];
   }
 
-  function itemById(id) {
-    return activeBank().find((w) => w.id === id);
+  function itemById(id, m = mode) {
+    return bankForMode(m === "hanzi" || m === "meaning" ? m : m).find((w) => w.id === id)
+      || allWords.find((w) => w.id === id)
+      || allSentences.find((w) => w.id === id);
+  }
+
+  function itemByIdInMode(id, m) {
+    const bank = m === "sentence" ? allSentences : allWords;
+    return bank.find((w) => w.id === id);
   }
 
   function rememberWrong(item) {
-    if (!item) return;
+    if (!item || !isQuizMode()) return;
     const list = wrongIds();
     if (!list.includes(item.id)) {
       list.push(item.id);
-      saveWrongBank();
-    } else {
+      saveJSON(KEYS.wrong, wrongBank);
       updateWrongBar();
+    }
+    if (currentSession) {
+      if (!currentSession.wrongIds.includes(item.id)) currentSession.wrongIds.push(item.id);
+      persistSession();
     }
   }
 
   function forgetWrong(item) {
-    if (!item) return;
+    if (!item || !isQuizMode()) return;
     const before = wrongIds().length;
     wrongBank[mode] = wrongIds().filter((id) => id !== item.id);
-    if (wrongBank[mode].length !== before) saveWrongBank();
-    else updateWrongBar();
+    if (wrongBank[mode].length !== before) {
+      saveJSON(KEYS.wrong, wrongBank);
+      updateWrongBar();
+    }
   }
 
   function wrongItems() {
-    return wrongIds().map(itemById).filter(Boolean);
+    return wrongIds().map((id) => itemByIdInMode(id, mode)).filter(Boolean);
+  }
+
+  function notePinyinReveal(item) {
+    if (!item || (mode !== "meaning" && mode !== "sentence")) return;
+    ensurePinyinShape();
+    const bucket = mode === "sentence" ? "sentence" : "meaning";
+    if (!pinyinHelp[bucket].includes(item.id)) {
+      pinyinHelp[bucket].push(item.id);
+      saveJSON(KEYS.pinyinHelp, pinyinHelp);
+    }
+    if (currentSession) {
+      if (!currentSession.pinyinReveals.includes(item.id)) {
+        currentSession.pinyinReveals.push(item.id);
+        persistSession();
+      }
+    }
+  }
+
+  function beginSession() {
+    if (!isQuizMode()) return;
+    // archive previous open session if it had activity
+    if (currentSession && sessionHasActivity(currentSession) && !currentSession.endedAt) {
+      finalizeSession(false);
+    }
+    currentSession = {
+      id: Date.now(),
+      startedAt: new Date().toISOString(),
+      endedAt: null,
+      mode,
+      correct: 0,
+      wrong: 0,
+      bestStreak: 0,
+      total: 0,
+      pinyinReveals: [],
+      wrongIds: [],
+      tagEvents: [],
+      reviewWrong: reviewingWrong,
+      reviewPinyin: reviewingPinyin,
+    };
+    persistSession();
+  }
+
+  function sessionHasActivity(s) {
+    return !!(s && (s.correct || s.wrong || s.pinyinReveals?.length || s.tagEvents?.length));
+  }
+
+  function syncSessionScores() {
+    if (!currentSession || !isQuizMode()) return;
+    currentSession.correct = correct;
+    currentSession.wrong = wrong;
+    currentSession.bestStreak = bestStreak;
+    currentSession.total = sessionTotal;
+    persistSession();
+  }
+
+  function finalizeSession(resetCurrent = true) {
+    if (!currentSession) return;
+    syncSessionScores();
+    if (!sessionHasActivity(currentSession)) {
+      if (resetCurrent) {
+        currentSession = null;
+        localStorage.removeItem(KEYS.session);
+      }
+      return;
+    }
+    currentSession.endedAt = new Date().toISOString();
+    history = [currentSession, ...history].slice(0, 60);
+    saveJSON(KEYS.history, history);
+    if (resetCurrent) {
+      currentSession = null;
+      localStorage.removeItem(KEYS.session);
+    }
   }
 
   function updateWrongBar() {
+    if (!isQuizMode()) return;
     const n = wrongIds().length;
-    els.wrongBankLabel.textContent = isSentenceMode() ? "Câu sai cần ôn" : "Từ sai cần ôn";
+    els.wrongBankLabel.textContent = mode === "sentence" ? "Câu sai cần ôn" : "Từ sai cần ôn";
     els.wrongBankCount.textContent = String(n);
     els.btnReviewWrong.disabled = n === 0 && !reviewingWrong;
     els.btnShowWrong.disabled = n === 0;
     els.btnClearWrong.disabled = n === 0;
-    els.reviewBanner.hidden = !reviewingWrong;
-    els.btnReviewWrong.textContent = reviewingWrong ? `Thoát ôn ${itemLabel()} sai` : `Ôn ${itemLabel()} sai`;
+    const reviewing = reviewingWrong || reviewingPinyin;
+    els.reviewBanner.hidden = !reviewing;
+    els.reviewBanner.textContent = reviewingPinyin
+      ? "Đang ôn các mục từng cần xem pinyin — trả lời đúng vẫn giữ trong nhật ký (chỉ gỡ khi Xóa)."
+      : "Đang ôn lại các mục đã trả lời sai — trả lời đúng sẽ gỡ khỏi danh sách.";
+    els.btnReviewWrong.textContent = reviewingWrong ? `Thoát ôn ${quizItemLabel()} sai` : `Ôn ${quizItemLabel()} sai`;
   }
 
-  function updateFilterVisibility() {
-    const sentence = isSentenceMode();
-    els.vocabFilters.hidden = sentence;
-    els.sentenceFilters.hidden = !sentence;
+  function updateChrome() {
+    const journal = isJournal();
+    els.quizChrome.hidden = journal;
+    els.journalChrome.hidden = !journal;
+    if (!journal) {
+      els.vocabFilters.hidden = mode === "sentence";
+      els.sentenceFilters.hidden = mode !== "sentence";
+    }
   }
 
   function shuffle(arr) {
@@ -636,27 +892,17 @@ select:focus {
     return out;
   }
 
-  function lessonKey(w) {
-    return `${w.book}::${w.lesson}`;
-  }
-
-  function lessonLabel(w) {
-    return `${w.book} · ${w.lesson}`;
-  }
+  function lessonKey(w) { return `${w.book}::${w.lesson}`; }
+  function lessonLabel(w) { return `${w.book} · ${w.lesson}`; }
 
   function rebuildLessonOptions() {
     const book = els.book.value;
     const filtered = book === "all" ? allWords : allWords.filter((w) => w.book === book);
-    const lessons = uniqueBy(
-      filtered.sort((a, b) => a.id - b.id),
-      (w) => lessonKey(w)
-    );
+    const lessons = uniqueBy(filtered.sort((a, b) => a.id - b.id), (w) => lessonKey(w));
     const prev = els.lesson.value;
     els.lesson.innerHTML = '<option value="all">Tất cả các bài</option>' +
       lessons.map((w) => `<option value="${lessonKey(w)}">${lessonLabel(w)} — ${w.title}</option>`).join("");
-    if ([...els.lesson.options].some((o) => o.value === prev)) {
-      els.lesson.value = prev;
-    }
+    if ([...els.lesson.options].some((o) => o.value === prev)) els.lesson.value = prev;
   }
 
   function filteredVocabPool() {
@@ -670,28 +916,38 @@ select:focus {
   }
 
   function buildPool() {
-    if (reviewingWrong) {
-      return uniqueBy(wrongItems(), (w) => w.id);
+    if (reviewingWrong) return uniqueBy(wrongItems(), (w) => w.id);
+    if (reviewingPinyin) {
+      ensurePinyinShape();
+      const bucket = mode === "sentence" ? "sentence" : "meaning";
+      const ids = pinyinHelp[bucket] || [];
+      const bank = mode === "sentence" ? allSentences : allWords;
+      return ids.map((id) => bank.find((w) => w.id === id)).filter(Boolean);
     }
-    if (isSentenceMode()) {
-      return uniqueBy(allSentences, (w) => w.id);
-    }
+    if (mode === "sentence") return uniqueBy(allSentences, (w) => w.id);
     let next = filteredVocabPool();
-    if (mode === "meaning") {
-      next = uniqueBy(next, (w) => w.hanzi + "||" + w.meaning);
-    } else {
-      next = uniqueBy(next, (w) => w.hanzi);
-    }
+    if (mode === "meaning") next = uniqueBy(next, (w) => w.hanzi + "||" + w.meaning);
+    else next = uniqueBy(next, (w) => w.hanzi);
     return next;
   }
 
   function resetSession() {
+    if (!isQuizMode()) return;
+    showTagPicker = false;
     pool = buildPool();
     queue = shuffle(pool);
     sessionTotal = queue.length;
     correct = 0;
     wrong = 0;
     streak = 0;
+    bestStreak = 0;
+    beginSession();
+    if (currentSession) {
+      currentSession.total = sessionTotal;
+      currentSession.reviewWrong = reviewingWrong;
+      currentSession.reviewPinyin = reviewingPinyin;
+      persistSession();
+    }
     updateWrongBar();
     updateStats();
     nextCard();
@@ -700,60 +956,86 @@ select:focus {
   function startWrongReview() {
     if (!wrongIds().length) return;
     reviewingWrong = true;
+    reviewingPinyin = false;
     resetSession();
   }
 
-  function exitWrongReview() {
+  function startPinyinReview(targetMode) {
+    ensurePinyinShape();
+    const m = targetMode || mode;
+    const bucket = m === "sentence" ? "sentence" : "meaning";
+    if (!(pinyinHelp[bucket] || []).length) return;
+    mode = m === "hanzi" ? "meaning" : m;
+    reviewingPinyin = true;
     reviewingWrong = false;
+    els.tabs.forEach((t) => {
+      const active = t.dataset.mode === mode;
+      t.classList.toggle("active", active);
+      t.setAttribute("aria-selected", active ? "true" : "false");
+    });
+    updateChrome();
+    resetSession();
+  }
+
+  function exitSpecialReview() {
+    reviewingWrong = false;
+    reviewingPinyin = false;
     resetSession();
   }
 
   function toggleWrongReview() {
-    if (reviewingWrong) exitWrongReview();
+    if (reviewingWrong) exitSpecialReview();
     else startWrongReview();
   }
 
   function clearWrongBank() {
     if (!wrongIds().length) return;
-    if (!confirm(`Xóa ${wrongIds().length} ${itemLabel()} sai của chế độ hiện tại?`)) return;
+    if (!confirm(`Xóa ${wrongIds().length} ${quizItemLabel()} sai của chế độ hiện tại?`)) return;
     wrongBank[mode] = [];
-    saveWrongBank();
-    if (reviewingWrong) exitWrongReview();
+    saveJSON(KEYS.wrong, wrongBank);
+    if (reviewingWrong) exitSpecialReview();
     else updateWrongBar();
   }
 
   function renderWrongList() {
     const items = wrongItems();
     if (!items.length) {
-      els.stage.innerHTML = `<div class="empty">Chưa có ${itemLabel()} sai nào.</div>`;
+      els.stage.innerHTML = `<div class="empty">Chưa có ${quizItemLabel()} sai nào.</div>`;
       current = null;
       return;
     }
-    const rows = items.map((w) => `
-      <div class="wrong-item">
-        <span class="hanzi-opt">${escapeHtml(w.hanzi)}</span>
-        <span class="py">${escapeHtml(w.pinyin)}</span>
-        <span class="mn">${escapeHtml(w.meaning)}${w.book ? ` · ${escapeHtml(w.book)} ${escapeHtml(w.lesson || "")}` : w.level ? ` · ${escapeHtml(w.level)}` : ""}</span>
-      </div>
-    `).join("");
     els.stage.innerHTML = `
       <div class="prompt">
-        <p class="meta">${isSentenceMode() ? "Câu" : "Từ"} đã trả lời sai · chế độ hiện tại</p>
-        <p class="pinyin">${items.length} ${itemLabel()}</p>
-        <p class="hint">Ôn lại để củng cố; trả lời đúng sẽ gỡ khỏi danh sách.</p>
+        <p class="meta">${mode === "sentence" ? "Câu" : "Từ"} đã trả lời sai</p>
+        <p class="pinyin">${items.length} ${quizItemLabel()}</p>
       </div>
-      <div class="wrong-list">${rows}</div>
+      <div class="wrong-list">${items.map(itemRow).join("")}</div>
       <div class="actions">
         <button class="btn ghost" type="button" id="btnBackQuiz">Quay lại quiz</button>
-        <button class="btn primary" type="button" id="btnStartWrongFromList">Ôn ${itemLabel()} sai</button>
-      </div>
-    `;
+        <button class="btn primary" type="button" id="btnStartWrongFromList">Ôn ${quizItemLabel()} sai</button>
+      </div>`;
     current = null;
     document.getElementById("btnBackQuiz").onclick = () => resetSession();
     document.getElementById("btnStartWrongFromList").onclick = startWrongReview;
   }
 
+  function itemRow(w, m = mode) {
+    const tags = getTags(m === "hanzi" ? "meaning" : m, w.id);
+    const meta = w.book
+      ? `${escapeHtml(w.book)} ${escapeHtml(w.lesson || "")}`
+      : escapeHtml(w.level || "HSK3");
+    return `
+      <div class="wrong-item">
+        <span class="hanzi-opt">${escapeHtml(w.hanzi)}</span>
+        <span class="py">${escapeHtml(w.pinyin)}</span>
+        <span class="mn">${escapeHtml(w.meaning)} · ${meta}
+          ${tags.length ? `<span class="item-tags">${tags.map((t) => `<span>${escapeHtml(t)}</span>`).join("")}</span>` : ""}
+        </span>
+      </div>`;
+  }
+
   function updateStats() {
+    if (!isQuizMode()) return;
     els.scoreCorrect.textContent = String(correct);
     els.scoreWrong.textContent = String(wrong);
     els.scoreStreak.textContent = String(streak);
@@ -761,12 +1043,13 @@ select:focus {
     const done = correct + wrong;
     const pct = sessionTotal ? Math.min(100, (done / sessionTotal) * 100) : 0;
     els.progressBar.style.width = `${pct}%`;
+    syncSessionScores();
   }
 
   function pickDistractors(answer, keyFn) {
     const answerKey = keyFn(answer);
-    const bank = activeBank();
-    const source = reviewingWrong ? bank : (pool.length > 1 ? pool : bank);
+    const bank = mode === "sentence" ? allSentences : allWords;
+    const source = pool.length > 1 ? pool : bank;
     const candidates = shuffle(source.filter((w) => keyFn(w) !== answerKey));
     const picked = [];
     const seen = new Set([answerKey]);
@@ -793,30 +1076,25 @@ select:focus {
     if (mode === "hanzi") {
       const distractors = pickDistractors(answer, (w) => w.hanzi);
       return shuffle([answer, ...distractors]).map((w) => ({
-        id: w.id,
-        label: w.hanzi,
-        correct: w.hanzi === answer.hanzi,
-        isHanzi: true,
+        id: w.id, label: w.hanzi, correct: w.hanzi === answer.hanzi, isHanzi: true,
       }));
     }
-    // meaning + sentence: choose Vietnamese translation
     const distractors = pickDistractors(answer, (w) => w.meaning);
     return shuffle([answer, ...distractors]).map((w) => ({
-      id: w.id,
-      label: w.meaning,
-      correct: w.meaning === answer.meaning,
+      id: w.id, label: w.meaning, correct: w.meaning === answer.meaning,
     }));
   }
 
   function nextCard() {
     answered = false;
+    showTagPicker = false;
     if (!pool.length) {
-      const emptyMsg = reviewingWrong
-        ? `Không còn ${itemLabel()} sai nào để ôn. Tuyệt!`
-        : isSentenceMode()
-          ? "Chưa có câu nào trong sentences.json — bổ sung để luyện dịch."
+      const emptyMsg = reviewingWrong || reviewingPinyin
+        ? `Không còn ${quizItemLabel()} nào trong bộ ôn này.`
+        : mode === "sentence"
+          ? "Chưa có câu nào trong sentences.json."
           : "Không có từ nào trong bộ lọc hiện tại.";
-      els.stage.innerHTML = reviewingWrong
+      els.stage.innerHTML = (reviewingWrong || reviewingPinyin)
         ? `<div class="empty">${emptyMsg}</div>
            <div class="actions" style="justify-content:center">
              <button class="btn primary" type="button" id="btnExitReviewEmpty">Về ôn thường</button>
@@ -825,13 +1103,11 @@ select:focus {
       current = null;
       updateStats();
       const exitBtn = document.getElementById("btnExitReviewEmpty");
-      if (exitBtn) exitBtn.onclick = exitWrongReview;
+      if (exitBtn) exitBtn.onclick = exitSpecialReview;
       return;
     }
     if (!queue.length) {
       renderDone();
-      current = null;
-      updateStats();
       return;
     }
     current = queue.shift();
@@ -841,67 +1117,127 @@ select:focus {
   }
 
   function renderDone() {
+    current = null;
+    updateStats();
+    finalizeSession(true);
+    const bankLeft = wrongIds().length;
     const total = correct + wrong;
     const rate = total ? Math.round((correct / total) * 100) : 0;
-    const bankLeft = wrongIds().length;
-    const reviewAction = reviewingWrong
-      ? (bankLeft
-          ? `<button class="btn primary" type="button" id="btnRestartWrong">Ôn tiếp ${bankLeft} ${itemLabel()} còn sai</button>`
-          : `<button class="btn primary" type="button" id="btnExitReviewDone">Đã hết ${itemLabel()} sai — về ôn thường</button>`)
+    const reviewAction = reviewingWrong || reviewingPinyin
+      ? `<button class="btn primary" type="button" id="btnExitReviewDone">Về ôn thường</button>`
       : (bankLeft
-          ? `<button class="btn accent" type="button" id="btnGoWrong">Học lại ${bankLeft} ${itemLabel()} sai</button>`
+          ? `<button class="btn accent" type="button" id="btnGoWrong">Học lại ${bankLeft} ${quizItemLabel()} sai</button>`
           : "");
     els.stage.innerHTML = `
       <div class="prompt">
-        <p class="meta">${reviewingWrong ? `Hoàn thành lượt ôn ${itemLabel()} sai` : "Hoàn thành lượt ôn"}</p>
+        <p class="meta">Hoàn thành session</p>
         <p class="pinyin">${correct}/${total} đúng · ${rate}%</p>
-        <p class="hint">Chuỗi dài nhất: ${bestStreak}${bankLeft ? ` · Còn ${bankLeft} ${itemLabel()} trong danh sách sai` : ""}</p>
+        <p class="hint">Chuỗi dài nhất: ${bestStreak}${bankLeft ? ` · Còn ${bankLeft} ${quizItemLabel()} sai` : ""} · Đã lưu vào Nhật ký</p>
       </div>
       <div class="actions">
-        <button class="btn ghost" type="button" id="btnRestart">${reviewingWrong ? `Ôn lại danh sách sai` : "Ôn lại từ đầu"}</button>
+        <button class="btn ghost" type="button" id="btnRestart">Ôn lại từ đầu</button>
         ${reviewAction}
-      </div>
-    `;
-    document.getElementById("btnRestart").onclick = resetSession;
+      </div>`;
+    document.getElementById("btnRestart").onclick = () => {
+      reviewingWrong = false;
+      reviewingPinyin = false;
+      resetSession();
+    };
     const goWrong = document.getElementById("btnGoWrong");
     if (goWrong) goWrong.onclick = startWrongReview;
-    const restartWrong = document.getElementById("btnRestartWrong");
-    if (restartWrong) restartWrong.onclick = startWrongReview;
     const exitDone = document.getElementById("btnExitReviewDone");
-    if (exitDone) exitDone.onclick = exitWrongReview;
+    if (exitDone) exitDone.onclick = exitSpecialReview;
+  }
+
+  function tagPickerHtml(item) {
+    if (!showTagPicker) return "";
+    const cur = getTags(mode === "hanzi" ? "meaning" : mode, item.id);
+    const chips = PRESET_TAGS.map((t) =>
+      `<button class="tag-chip${cur.includes(t) ? " on" : ""}" type="button" data-tag="${escapeHtml(t)}">${escapeHtml(t)}</button>`
+    ).join("");
+    return `<div class="tag-chips" id="tagChips">${chips}
+      <button class="tag-chip custom" type="button" id="btnCustomTag">+ tag khác</button>
+    </div>`;
+  }
+
+  function bindTagPicker(item) {
+    const box = document.getElementById("tagChips");
+    if (!box) return;
+    const tagMode = mode === "hanzi" ? "meaning" : mode;
+    box.onclick = (e) => {
+      const btn = e.target.closest("[data-tag]");
+      if (!btn) return;
+      toggleTag(tagMode, item.id, btn.dataset.tag);
+      showTagPicker = true;
+      renderCard();
+      if (answered) {
+        // restore answered UI lightly
+        answered = true;
+        reveal(choices.findIndex((c) => c.correct) >= 0 ? null : null);
+      }
+    };
+    // Fix: after re-render from tagging mid-answer, need better approach
+    document.getElementById("btnCustomTag")?.addEventListener("click", () => {
+      const t = prompt("Nhập tag mới:");
+      if (!t || !t.trim()) return;
+      toggleTag(tagMode, item.id, t.trim());
+      showTagPicker = true;
+      const wasAnswered = answered;
+      const snapshotChoices = choices;
+      renderCard();
+      if (wasAnswered) {
+        answered = true;
+        choices = snapshotChoices;
+        // re-apply choice state
+        const buttons = [...document.querySelectorAll(".choice")];
+        buttons.forEach((btn, i) => {
+          btn.disabled = true;
+          if (choices[i]?.correct) btn.classList.add("correct");
+        });
+        document.getElementById("btnNext").disabled = false;
+      }
+    });
   }
 
   function renderCard() {
+    const tags = getTags(mode === "hanzi" ? "meaning" : mode, current.id);
+    const tagSummary = tags.length
+      ? `<div class="item-tags" style="justify-content:center;margin-top:10px">${tags.map((t) => `<span>${escapeHtml(t)}</span>`).join("")}</div>`
+      : "";
+
     let promptHtml = "";
     if (mode === "meaning") {
-      const meta = `${current.book} · ${current.lesson} · ${current.title}`;
       promptHtml = `
-        <p class="meta">${meta}</p>
+        <p class="meta">${escapeHtml(current.book)} · ${escapeHtml(current.lesson)} · ${escapeHtml(current.title)}</p>
         <p class="hanzi">${escapeHtml(current.hanzi)}</p>
         <p class="pinyin reveal" id="promptPinyin"${showPinyin ? "" : " hidden"}>${escapeHtml(current.pinyin)}</p>
-        <button class="pinyin-toggle" type="button" id="btnTogglePinyin" aria-pressed="${showPinyin ? "true" : "false"}">
-          ${showPinyin ? "Ẩn pinyin" : "Hiện pinyin"}
-        </button>
-        <p class="hint">Chọn nghĩa tiếng Việt đúng</p>
-      `;
+        <div class="card-tools">
+          <button class="pinyin-toggle" type="button" id="btnTogglePinyin" aria-pressed="${showPinyin ? "true" : "false"}">${showPinyin ? "Ẩn pinyin" : "Hiện pinyin"}</button>
+          <button class="pinyin-toggle" type="button" id="btnToggleTags">${showTagPicker ? "Ẩn tag" : "Gắn tag"}</button>
+        </div>
+        ${tagSummary}${tagPickerHtml(current)}
+        <p class="hint">Chọn nghĩa tiếng Việt đúng</p>`;
     } else if (mode === "sentence") {
       promptHtml = `
         <p class="meta">${escapeHtml(current.level || "HSK3")} · dịch câu</p>
         <p class="hanzi sentence">${escapeHtml(current.hanzi)}</p>
         <p class="pinyin reveal sentence" id="promptPinyin"${showPinyin ? "" : " hidden"}>${escapeHtml(current.pinyin)}</p>
-        <button class="pinyin-toggle" type="button" id="btnTogglePinyin" aria-pressed="${showPinyin ? "true" : "false"}">
-          ${showPinyin ? "Ẩn pinyin" : "Hiện pinyin"}
-        </button>
-        <p class="hint">Chọn bản dịch tiếng Việt đúng</p>
-      `;
+        <div class="card-tools">
+          <button class="pinyin-toggle" type="button" id="btnTogglePinyin" aria-pressed="${showPinyin ? "true" : "false"}">${showPinyin ? "Ẩn pinyin" : "Hiện pinyin"}</button>
+          <button class="pinyin-toggle" type="button" id="btnToggleTags">${showTagPicker ? "Ẩn tag" : "Gắn tag"}</button>
+        </div>
+        ${tagSummary}${tagPickerHtml(current)}
+        <p class="hint">Chọn bản dịch tiếng Việt đúng</p>`;
     } else {
-      const meta = `${current.book} · ${current.lesson} · ${current.title}`;
       promptHtml = `
-        <p class="meta">${meta}</p>
+        <p class="meta">${escapeHtml(current.book)} · ${escapeHtml(current.lesson)} · ${escapeHtml(current.title)}</p>
         <p class="pinyin">${escapeHtml(current.pinyin)}</p>
         <p class="meaning">${escapeHtml(current.meaning)}</p>
-        <p class="hint">Chọn Hán tự đúng</p>
-      `;
+        <div class="card-tools">
+          <button class="pinyin-toggle" type="button" id="btnToggleTags">${showTagPicker ? "Ẩn tag" : "Gắn tag"}</button>
+        </div>
+        ${tagSummary}${tagPickerHtml(current)}
+        <p class="hint">Chọn Hán tự đúng</p>`;
     }
 
     const choicesHtml = choices.map((c, i) => `
@@ -909,8 +1245,7 @@ select:focus {
         ${c.isHanzi
           ? `<span class="hanzi-opt">${i + 1}. ${escapeHtml(c.label)}</span>`
           : `<span>${i + 1}. ${escapeHtml(c.label)}</span>`}
-      </button>
-    `).join("");
+      </button>`).join("");
 
     els.stage.innerHTML = `
       <div class="prompt">${promptHtml}</div>
@@ -919,30 +1254,96 @@ select:focus {
       <div class="actions">
         <button class="btn ghost" type="button" id="btnSkip">Bỏ qua</button>
         <button class="btn primary" type="button" id="btnNext" disabled>Câu tiếp</button>
-      </div>
-    `;
+      </div>`;
 
     document.getElementById("choices").onclick = (e) => {
       const btn = e.target.closest(".choice");
       if (!btn || answered) return;
       onAnswer(Number(btn.dataset.idx));
     };
-    const toggleBtn = document.getElementById("btnTogglePinyin");
-    if (toggleBtn) {
-      toggleBtn.onclick = () => {
-        showPinyin = !showPinyin;
-        const py = document.getElementById("promptPinyin");
-        if (py) py.hidden = !showPinyin;
-        toggleBtn.setAttribute("aria-pressed", showPinyin ? "true" : "false");
-        toggleBtn.textContent = showPinyin ? "Ẩn pinyin" : "Hiện pinyin";
-      };
-    }
+
+    document.getElementById("btnTogglePinyin")?.addEventListener("click", () => {
+      showPinyin = !showPinyin;
+      const py = document.getElementById("promptPinyin");
+      if (py) py.hidden = !showPinyin;
+      const toggleBtn = document.getElementById("btnTogglePinyin");
+      toggleBtn.setAttribute("aria-pressed", showPinyin ? "true" : "false");
+      toggleBtn.textContent = showPinyin ? "Ẩn pinyin" : "Hiện pinyin";
+      if (showPinyin) notePinyinReveal(current);
+    });
+
+    document.getElementById("btnToggleTags")?.addEventListener("click", () => {
+      showTagPicker = !showTagPicker;
+      const wasAnswered = answered;
+      const chosenIdx = wasAnswered
+        ? [...document.querySelectorAll(".choice")].findIndex((b) => b.classList.contains("wrong") || (b.classList.contains("correct") && choices[[...document.querySelectorAll(".choice")].indexOf(b)]?.correct))
+        : -1;
+      // simpler: remember if answered and which feedback
+      const fbText = document.getElementById("feedback")?.textContent || "";
+      const fbClass = document.getElementById("feedback")?.className || "";
+      renderCard();
+      if (wasAnswered) {
+        answered = true;
+        const buttons = [...document.querySelectorAll(".choice")];
+        buttons.forEach((btn, i) => {
+          btn.disabled = true;
+          if (choices[i].correct) btn.classList.add("correct");
+        });
+        const fb = document.getElementById("feedback");
+        fb.className = fbClass || "feedback";
+        fb.textContent = fbText;
+        document.getElementById("btnNext").disabled = false;
+      }
+    });
+
+    // tag chip clicks
+    const tagMode = mode === "hanzi" ? "meaning" : mode;
+    document.getElementById("tagChips")?.addEventListener("click", (e) => {
+      const btn = e.target.closest("[data-tag]");
+      if (!btn) return;
+      const wasAnswered = answered;
+      const fbText = document.getElementById("feedback")?.textContent || "";
+      const fbClass = document.getElementById("feedback")?.className || "";
+      toggleTag(tagMode, current.id, btn.dataset.tag);
+      showTagPicker = true;
+      renderCard();
+      if (wasAnswered) {
+        answered = true;
+        [...document.querySelectorAll(".choice")].forEach((b, i) => {
+          b.disabled = true;
+          if (choices[i].correct) b.classList.add("correct");
+        });
+        const fb = document.getElementById("feedback");
+        fb.className = fbClass || "feedback";
+        fb.textContent = fbText;
+        document.getElementById("btnNext").disabled = false;
+      }
+    });
+    document.getElementById("btnCustomTag")?.addEventListener("click", () => {
+      const t = prompt("Nhập tag mới:");
+      if (!t || !t.trim()) return;
+      const wasAnswered = answered;
+      const fbText = document.getElementById("feedback")?.textContent || "";
+      const fbClass = document.getElementById("feedback")?.className || "";
+      toggleTag(tagMode, current.id, t.trim());
+      showTagPicker = true;
+      renderCard();
+      if (wasAnswered) {
+        answered = true;
+        [...document.querySelectorAll(".choice")].forEach((b, i) => {
+          b.disabled = true;
+          if (choices[i].correct) b.classList.add("correct");
+        });
+        const fb = document.getElementById("feedback");
+        fb.className = fbClass || "feedback";
+        fb.textContent = fbText;
+        document.getElementById("btnNext").disabled = false;
+      }
+    });
+
     document.getElementById("btnNext").onclick = () => nextCard();
     document.getElementById("btnSkip").onclick = () => {
-      if (answered) {
-        nextCard();
-        return;
-      }
+      if (answered) { nextCard(); return; }
       wrong += 1;
       streak = 0;
       rememberWrong(current);
@@ -960,7 +1361,7 @@ select:focus {
       correct += 1;
       streak += 1;
       bestStreak = Math.max(bestStreak, streak);
-      forgetWrong(current);
+      if (!reviewingPinyin) forgetWrong(current);
     } else {
       wrong += 1;
       streak = 0;
@@ -986,9 +1387,7 @@ select:focus {
         : `Đáp án: ${current.meaning}`;
     } else if (choices[chosenIdx].correct) {
       fb.className = "feedback ok";
-      fb.textContent = reviewingWrong
-        ? `Đúng! Đã gỡ khỏi danh sách ${itemLabel()} sai.`
-        : "Đúng!";
+      fb.textContent = reviewingWrong ? `Đúng! Đã gỡ khỏi danh sách ${quizItemLabel()} sai.` : "Đúng!";
     } else {
       fb.className = "feedback bad";
       fb.textContent = mode === "hanzi"
@@ -1007,28 +1406,196 @@ select:focus {
       .replaceAll('"', "&quot;");
   }
 
+  function formatTime(iso) {
+    if (!iso) return "—";
+    const d = new Date(iso);
+    return d.toLocaleString("vi-VN", { dateStyle: "short", timeStyle: "short" });
+  }
+
+  function renderJournal() {
+    current = null;
+    els.journalNav.querySelectorAll("[data-journal]").forEach((b) => {
+      b.classList.toggle("active", b.dataset.journal === journalView);
+    });
+    if (journalView === "session") renderJournalSession();
+    else if (journalView === "pinyin") renderJournalPinyin();
+    else if (journalView === "tags") renderJournalTags();
+    else renderJournalHistory();
+  }
+
+  function renderJournalSession() {
+    const s = currentSession || loadJSON(KEYS.session, null);
+    if (!s || !sessionHasActivity(s) && !s.startedAt) {
+      // still show open session stub
+    }
+    const open = currentSession || loadJSON(KEYS.session, null);
+    if (!open) {
+      els.stage.innerHTML = `<div class="empty">Chưa có session nào. Hãy bắt đầu ôn ở một tab quiz.</div>`;
+      return;
+    }
+    const bank = open.mode === "sentence" ? allSentences : allWords;
+    const reveals = (open.pinyinReveals || []).map((id) => bank.find((w) => w.id === id)).filter(Boolean);
+    els.stage.innerHTML = `
+      <div class="session-card">
+        <h3>Session ${open.endedAt ? "đã kết thúc" : "đang mở"}</h3>
+        <p>${escapeHtml(MODE_LABEL[open.mode] || open.mode)} · bắt đầu ${formatTime(open.startedAt)}${open.endedAt ? ` · kết thúc ${formatTime(open.endedAt)}` : ""}</p>
+        <div class="row">
+          <span>Đúng: <strong>${open.correct || 0}</strong></span>
+          <span>Sai: <strong>${open.wrong || 0}</strong></span>
+          <span>Chuỗi max: <strong>${open.bestStreak || 0}</strong></span>
+          <span>Xem pinyin: <strong>${(open.pinyinReveals || []).length}</strong></span>
+          <span>Tag: <strong>${(open.tagEvents || []).length}</strong></span>
+        </div>
+      </div>
+      <div class="prompt" style="padding:16px">
+        <p class="meta">Trong session này đã cần xem pinyin</p>
+        <p class="hint">${reveals.length ? "" : "Chưa có mục nào."}</p>
+      </div>
+      ${reveals.length ? `<div class="wrong-list">${reveals.map((w) => itemRow(w, open.mode)).join("")}</div>` : ""}
+      <div class="actions">
+        <button class="btn ghost" type="button" id="btnClearHistoryOne" ${open.endedAt ? "hidden" : ""}>Đóng & lưu session</button>
+      </div>`;
+    document.getElementById("btnClearHistoryOne")?.addEventListener("click", () => {
+      finalizeSession(true);
+      beginSession();
+      renderJournal();
+    });
+  }
+
+  function renderJournalPinyin() {
+    ensurePinyinShape();
+    const sent = pinyinHelp.sentence.map((id) => allSentences.find((w) => w.id === id)).filter(Boolean);
+    const words = pinyinHelp.meaning.map((id) => allWords.find((w) => w.id === id)).filter(Boolean);
+    els.stage.innerHTML = `
+      <div class="session-card">
+        <h3>Đã xem pinyin</h3>
+        <p>Tự động lưu khi bạn bấm Hiện pinyin lúc ôn (theo session, cộng dồn).</p>
+        <div class="row">
+          <span>Câu: <strong>${sent.length}</strong></span>
+          <span>Từ (Hán tự→Nghĩa): <strong>${words.length}</strong></span>
+        </div>
+      </div>
+      ${sent.length ? `<p class="meta" style="margin:0;font-weight:600;color:var(--muted)">Câu</p><div class="wrong-list">${sent.map((w) => itemRow(w, "sentence")).join("")}</div>` : ""}
+      ${words.length ? `<p class="meta" style="margin:0;font-weight:600;color:var(--muted)">Từ</p><div class="wrong-list">${words.map((w) => itemRow(w, "meaning")).join("")}</div>` : ""}
+      ${!sent.length && !words.length ? `<div class="empty">Chưa có mục nào.</div>` : ""}
+      <div class="actions">
+        <button class="btn primary" type="button" id="btnReviewPinyinSent" ${sent.length ? "" : "disabled"}>Ôn câu đã xem pinyin</button>
+        <button class="btn ghost" type="button" id="btnReviewPinyinWord" ${words.length ? "" : "disabled"}>Ôn từ đã xem pinyin</button>
+        <button class="btn danger-ghost" type="button" id="btnClearPinyin">Xóa danh sách</button>
+      </div>`;
+    document.getElementById("btnReviewPinyinSent").onclick = () => startPinyinReview("sentence");
+    document.getElementById("btnReviewPinyinWord").onclick = () => startPinyinReview("meaning");
+    document.getElementById("btnClearPinyin").onclick = () => {
+      if (!confirm("Xóa toàn bộ danh sách đã xem pinyin?")) return;
+      pinyinHelp = { meaning: [], sentence: [] };
+      saveJSON(KEYS.pinyinHelp, pinyinHelp);
+      renderJournal();
+    };
+  }
+
+  function renderJournalTags() {
+    const entries = Object.entries(tagMap).map(([key, tags]) => {
+      const [m, idStr] = key.split(":");
+      const id = Number(idStr);
+      const item = itemByIdInMode(id, m);
+      return item ? { m, item, tags } : null;
+    }).filter(Boolean);
+    els.stage.innerHTML = `
+      <div class="session-card">
+        <h3>Đã gắn tag</h3>
+        <p>Gắn chủ động khi ôn bằng nút Gắn tag. Tag sẵn: ${PRESET_TAGS.map(escapeHtml).join(", ")}.</p>
+        <div class="row"><span>Tổng: <strong>${entries.length}</strong></span></div>
+      </div>
+      ${entries.length
+        ? `<div class="wrong-list">${entries.map(({ m, item, tags }) => `
+            <div class="wrong-item">
+              <span class="hanzi-opt">${escapeHtml(item.hanzi)}</span>
+              <span class="py">${escapeHtml(item.pinyin)} · ${escapeHtml(MODE_LABEL[m] || m)}</span>
+              <span class="mn">${escapeHtml(item.meaning)}
+                <span class="item-tags">${tags.map((t) => `<span>${escapeHtml(t)}</span>`).join("")}</span>
+              </span>
+            </div>`).join("")}</div>`
+        : `<div class="empty">Chưa gắn tag nào.</div>`}
+      <div class="actions">
+        <button class="btn danger-ghost" type="button" id="btnClearTags" ${entries.length ? "" : "disabled"}>Xóa hết tag</button>
+      </div>`;
+    document.getElementById("btnClearTags")?.addEventListener("click", () => {
+      if (!confirm("Xóa toàn bộ tag?")) return;
+      tagMap = {};
+      saveJSON(KEYS.tags, tagMap);
+      renderJournal();
+    });
+  }
+
+  function renderJournalHistory() {
+    if (!history.length) {
+      els.stage.innerHTML = `<div class="empty">Chưa có lịch sử session. Mỗi lần ôn xong một lượt sẽ được lưu tại đây.</div>`;
+      return;
+    }
+    els.stage.innerHTML = `
+      <div class="session-card">
+        <h3>Lịch sử session</h3>
+        <p>Tối đa 60 lượt gần nhất, lưu trên trình duyệt.</p>
+      </div>
+      <div class="wrong-list">${history.map((s) => `
+        <div class="session-card">
+          <h3>${escapeHtml(MODE_LABEL[s.mode] || s.mode)}</h3>
+          <p>${formatTime(s.startedAt)} → ${formatTime(s.endedAt)}</p>
+          <div class="row">
+            <span>Đúng ${s.correct || 0}/${(s.correct || 0) + (s.wrong || 0)}</span>
+            <span>Xem pinyin ${(s.pinyinReveals || []).length}</span>
+            <span>Sai ${(s.wrongIds || []).length}</span>
+            <span>Tag ${(s.tagEvents || []).length}</span>
+          </div>
+        </div>`).join("")}</div>
+      <div class="actions">
+        <button class="btn danger-ghost" type="button" id="btnClearHistory">Xóa lịch sử</button>
+      </div>`;
+    document.getElementById("btnClearHistory").onclick = () => {
+      if (!confirm("Xóa toàn bộ lịch sử session?")) return;
+      history = [];
+      saveJSON(KEYS.history, history);
+      renderJournal();
+    };
+  }
+
   function setMode(next) {
+    if (isQuizMode() && next === "journal") {
+      // keep current session open when peeking journal
+      syncSessionScores();
+    }
+    if (isQuizMode() && next !== mode && next !== "journal") {
+      reviewingWrong = false;
+      reviewingPinyin = false;
+    }
     mode = next;
-    reviewingWrong = false;
-    updateFilterVisibility();
+    showTagPicker = false;
+    updateChrome();
     els.tabs.forEach((t) => {
       const active = t.dataset.mode === mode;
       t.classList.toggle("active", active);
       t.setAttribute("aria-selected", active ? "true" : "false");
     });
-    resetSession();
+    if (isJournal()) renderJournal();
+    else resetSession();
   }
 
-  els.tabs.forEach((t) => {
-    t.addEventListener("click", () => setMode(t.dataset.mode));
+  els.tabs.forEach((t) => t.addEventListener("click", () => setMode(t.dataset.mode)));
+  els.journalNav.addEventListener("click", (e) => {
+    const btn = e.target.closest("[data-journal]");
+    if (!btn) return;
+    journalView = btn.dataset.journal;
+    renderJournal();
   });
   els.book.addEventListener("change", () => {
     reviewingWrong = false;
+    reviewingPinyin = false;
     rebuildLessonOptions();
     resetSession();
   });
   els.lesson.addEventListener("change", () => {
     reviewingWrong = false;
+    reviewingPinyin = false;
     resetSession();
   });
   els.btnReviewWrong.addEventListener("click", toggleWrongReview);
@@ -1036,7 +1603,7 @@ select:focus {
   els.btnClearWrong.addEventListener("click", clearWrongBank);
 
   document.addEventListener("keydown", (e) => {
-    if (!current) return;
+    if (!current || isJournal()) return;
     if (e.target.matches("select, input, textarea, button")) return;
     if (!answered && ["1", "2", "3", "4"].includes(e.key)) {
       const idx = Number(e.key) - 1;
@@ -1059,11 +1626,18 @@ select:focus {
       if (!sentRes.ok) throw new Error(`sentences.json HTTP ${sentRes.status}`);
       allWords = await vocabRes.json();
       allSentences = await sentRes.json();
+      ensureWrongShape();
+      ensurePinyinShape();
       wrongBank.meaning = wrongBank.meaning.filter((id) => allWords.some((w) => w.id === id));
       wrongBank.hanzi = wrongBank.hanzi.filter((id) => allWords.some((w) => w.id === id));
       wrongBank.sentence = wrongBank.sentence.filter((id) => allSentences.some((w) => w.id === id));
-      saveWrongBank();
-      updateFilterVisibility();
+      pinyinHelp.meaning = pinyinHelp.meaning.filter((id) => allWords.some((w) => w.id === id));
+      pinyinHelp.sentence = pinyinHelp.sentence.filter((id) => allSentences.some((w) => w.id === id));
+      saveJSON(KEYS.wrong, wrongBank);
+      saveJSON(KEYS.pinyinHelp, pinyinHelp);
+      const savedSession = loadJSON(KEYS.session, null);
+      if (savedSession && !savedSession.endedAt) currentSession = savedSession;
+      updateChrome();
       rebuildLessonOptions();
       resetSession();
     } catch (err) {
