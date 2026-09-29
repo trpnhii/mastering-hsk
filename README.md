@@ -21,8 +21,8 @@ App nằm trong `docs/`:
 - Tab **Hán tự → Nghĩa**: hiện chữ Hán, chọn nghĩa đúng (nút hiện/ẩn pinyin)
 - Tab **Pinyin + Nghĩa → Hán tự**: hiện pinyin + nghĩa, chọn Hán tự đúng
 - Tab **Câu → Nghĩa**: hiện câu Hán ngắn (HSK 3), chọn bản dịch; có nút hiện/ẩn pinyin
-- Tab **Nhật ký**: session hiện tại, danh sách đã xem pinyin, tag, lịch sử các lượt ôn
-- Mỗi lần ôn là 1 session (lưu local); bấm **Hiện pinyin** sẽ ghi vào nhật ký; **Gắn tag** chủ động (khó / hay quên / cần ôn / quan trọng / tự nhập)
+- Tab **Nhật ký**: session hiện tại, danh sách đã xem pinyin, mục gắn cờ, lịch sử các lượt ôn
+- Mỗi lần ôn là 1 session (lưu local); bấm **Hiện pinyin** sẽ ghi vào nhật ký; **Gắn cờ** để đánh dấu học lại sau
 - Lọc theo sách / bài (Hán 1–3); ngân hàng mục sai để ôn lại; phím `1–4` / `Enter` / `Space`
 
 Câu dịch nằm trong `docs/sentences.json` — thêm object `{ id, hanzi, pinyin, meaning, level }` để mở rộng.

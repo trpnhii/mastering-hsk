@@ -327,46 +327,23 @@ select:focus {
   margin-top: 14px;
 }
 .prompt .card-tools .pinyin-toggle { margin-top: 0; }
-.tag-chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  justify-content: center;
+.flag-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
   margin-top: 10px;
-}
-.tag-chip {
-  appearance: none;
-  border: 1px solid var(--line);
-  background: #fff;
-  color: var(--muted);
-  border-radius: 999px;
-  padding: 5px 10px;
-  font: inherit;
   font-size: 12px;
   font-weight: 600;
-  cursor: pointer;
-}
-.tag-chip.on {
-  border-color: var(--teal);
-  background: var(--teal-soft);
-  color: var(--teal-dark);
-}
-.tag-chip.custom {
-  border-style: dashed;
-}
-.item-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
-  margin-top: 4px;
-}
-.item-tags span {
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--teal-dark);
-  background: var(--teal-soft);
+  color: #9a4d0f;
+  background: #fff4e8;
+  border: 1px solid #f0d2b0;
   border-radius: 999px;
-  padding: 2px 8px;
+  padding: 4px 10px;
+}
+.pinyin-toggle.flag-on {
+  background: #fff4e8;
+  border-color: #f0d2b0;
+  color: #9a4d0f;
 }
 
 .quiz-chrome[hidden], .journal-only[hidden] { display: none !important; }
@@ -523,7 +500,7 @@ select:focus {
     <header class="brand">
       <div class="eyebrow">Mastering HSK</div>
       <h1>Flashcards ôn thi</h1>
-      <p>Ôn từ, dịch câu ngắn HSK 3, lưu session / câu đã xem pinyin, và gắn tag để ôn có chủ đích.</p>
+      <p>Ôn từ, dịch câu ngắn HSK 3, lưu session / câu đã xem pinyin, và gắn cờ để học lại sau.</p>
     </header>
 
     <section class="panel" aria-live="polite">
@@ -582,7 +559,7 @@ select:focus {
         <div class="journal-nav" id="journalNav">
           <button class="btn compact ghost active" type="button" data-journal="session">Session hiện tại</button>
           <button class="btn compact ghost" type="button" data-journal="pinyin">Đã xem pinyin</button>
-          <button class="btn compact ghost" type="button" data-journal="tags">Đã gắn tag</button>
+          <button class="btn compact ghost" type="button" data-journal="flags">Đã gắn cờ</button>
           <button class="btn compact ghost" type="button" data-journal="history">Lịch sử</button>
         </div>
       </div>
@@ -592,16 +569,15 @@ select:focus {
       </div>
     </section>
 
-    <p class="footer-note">Từ: <code>vocab.json</code> · Câu: <code>sentences.json</code> · phím 1–4 / Enter / Space · session + tag lưu local</p>
+    <p class="footer-note">Từ: <code>vocab.json</code> · Câu: <code>sentences.json</code> · phím 1–4 / Enter / Space · session + cờ lưu local</p>
   </main>
 
 <script>
 (() => {
   const CHOICE_COUNT = 4;
-  const PRESET_TAGS = ["khó", "hay quên", "cần ôn", "quan trọng"];
   const KEYS = {
     wrong: "hsk-flashcards-wrong-v1",
-    tags: "hsk-flashcards-tags-v1",
+    flags: "hsk-flashcards-flags-v1",
     history: "hsk-flashcards-history-v1",
     pinyinHelp: "hsk-flashcards-pinyin-help-v1",
     session: "hsk-flashcards-session-v1",
@@ -620,9 +596,8 @@ select:focus {
   let choices = [];
   let answered = false;
   let mode = "meaning"; // meaning | hanzi | sentence | journal
-  let journalView = "session"; // session | pinyin | tags | history
+  let journalView = "session"; // session | pinyin | flags | history
   let showPinyin = false;
-  let showTagPicker = false;
   let reviewingWrong = false;
   let reviewingPinyin = false;
   let correct = 0;
@@ -633,7 +608,7 @@ select:focus {
   let currentSession = null;
 
   let wrongBank = loadJSON(KEYS.wrong, { meaning: [], hanzi: [], sentence: [] });
-  let tagMap = loadJSON(KEYS.tags, {});
+  let flagged = loadFlags();
   let history = loadJSON(KEYS.history, []);
   let pinyinHelp = loadJSON(KEYS.pinyinHelp, { meaning: [], sentence: [] });
 
@@ -672,6 +647,22 @@ select:focus {
   function saveJSON(key, value) {
     localStorage.setItem(key, JSON.stringify(value));
   }
+  function loadFlags() {
+    // New format: ["sentence:3", "meaning:12"]
+    const raw = loadJSON(KEYS.flags, null);
+    if (Array.isArray(raw)) return [...new Set(raw.map(String))];
+    // Migrate old multi-tag map if present
+    try {
+      const legacy = JSON.parse(localStorage.getItem("hsk-flashcards-tags-v1") || "null");
+      if (legacy && typeof legacy === "object") {
+        const keys = Object.keys(legacy);
+        saveJSON(KEYS.flags, keys);
+        return keys;
+      }
+    } catch {}
+    return [];
+  }
+
 
   function isJournal() { return mode === "journal"; }
   function isSentenceMode() { return mode === "sentence"; }
@@ -689,28 +680,31 @@ select:focus {
     return m === "sentence" ? allSentences : allWords;
   }
 
-  function tagKey(m, id) { return `${m}:${id}`; }
+  function flagKey(m, id) { return `${m}:${id}`; }
 
-  function getTags(m, id) {
-    return tagMap[tagKey(m, id)] || [];
+  function flagMode() {
+    return mode === "hanzi" ? "meaning" : mode;
   }
 
-  function setTags(m, id, tags) {
-    const key = tagKey(m, id);
-    const clean = [...new Set(tags.map((t) => t.trim()).filter(Boolean))];
-    if (clean.length) tagMap[key] = clean;
-    else delete tagMap[key];
-    saveJSON(KEYS.tags, tagMap);
+  function isFlagged(m, id) {
+    return flagged.includes(flagKey(m, id));
+  }
+
+  function setFlagged(m, id, on) {
+    const key = flagKey(m, id);
+    const has = flagged.includes(key);
+    if (on && !has) flagged.push(key);
+    if (!on && has) flagged = flagged.filter((k) => k !== key);
+    saveJSON(KEYS.flags, flagged);
     if (currentSession && isQuizMode()) {
-      currentSession.tagEvents = currentSession.tagEvents || [];
-      currentSession.tagEvents.push({ id, mode: m, tags: clean, at: Date.now() });
+      currentSession.flagEvents = currentSession.flagEvents || [];
+      currentSession.flagEvents.push({ id, mode: m, flagged: on, at: Date.now() });
       persistSession();
     }
   }
 
-  function toggleTag(m, id, tag) {
-    const cur = getTags(m, id);
-    setTags(m, id, cur.includes(tag) ? cur.filter((t) => t !== tag) : [...cur, tag]);
+  function toggleFlag(m, id) {
+    setFlagged(m, id, !isFlagged(m, id));
   }
 
   function persistSession() {
@@ -806,7 +800,7 @@ select:focus {
       total: 0,
       pinyinReveals: [],
       wrongIds: [],
-      tagEvents: [],
+      flagEvents: [],
       reviewWrong: reviewingWrong,
       reviewPinyin: reviewingPinyin,
     };
@@ -814,7 +808,7 @@ select:focus {
   }
 
   function sessionHasActivity(s) {
-    return !!(s && (s.correct || s.wrong || s.pinyinReveals?.length || s.tagEvents?.length));
+    return !!(s && (s.correct || s.wrong || s.pinyinReveals?.length || s.flagEvents?.length));
   }
 
   function syncSessionScores() {
@@ -933,7 +927,6 @@ select:focus {
 
   function resetSession() {
     if (!isQuizMode()) return;
-    showTagPicker = false;
     pool = buildPool();
     queue = shuffle(pool);
     sessionTotal = queue.length;
@@ -1020,17 +1013,16 @@ select:focus {
   }
 
   function itemRow(w, m = mode) {
-    const tags = getTags(m === "hanzi" ? "meaning" : m, w.id);
+    const fm = m === "hanzi" ? "meaning" : m;
     const meta = w.book
       ? `${escapeHtml(w.book)} ${escapeHtml(w.lesson || "")}`
       : escapeHtml(w.level || "HSK3");
+    const flag = isFlagged(fm, w.id) ? `<span class="flag-badge">⚑ Đã gắn cờ</span>` : "";
     return `
       <div class="wrong-item">
         <span class="hanzi-opt">${escapeHtml(w.hanzi)}</span>
         <span class="py">${escapeHtml(w.pinyin)}</span>
-        <span class="mn">${escapeHtml(w.meaning)} · ${meta}
-          ${tags.length ? `<span class="item-tags">${tags.map((t) => `<span>${escapeHtml(t)}</span>`).join("")}</span>` : ""}
-        </span>
+        <span class="mn">${escapeHtml(w.meaning)} · ${meta}${flag}</span>
       </div>`;
   }
 
@@ -1087,7 +1079,6 @@ select:focus {
 
   function nextCard() {
     answered = false;
-    showTagPicker = false;
     if (!pool.length) {
       const emptyMsg = reviewingWrong || reviewingPinyin
         ? `Không còn ${quizItemLabel()} nào trong bộ ôn này.`
@@ -1149,61 +1140,11 @@ select:focus {
     if (exitDone) exitDone.onclick = exitSpecialReview;
   }
 
-  function tagPickerHtml(item) {
-    if (!showTagPicker) return "";
-    const cur = getTags(mode === "hanzi" ? "meaning" : mode, item.id);
-    const chips = PRESET_TAGS.map((t) =>
-      `<button class="tag-chip${cur.includes(t) ? " on" : ""}" type="button" data-tag="${escapeHtml(t)}">${escapeHtml(t)}</button>`
-    ).join("");
-    return `<div class="tag-chips" id="tagChips">${chips}
-      <button class="tag-chip custom" type="button" id="btnCustomTag">+ tag khác</button>
-    </div>`;
-  }
-
-  function bindTagPicker(item) {
-    const box = document.getElementById("tagChips");
-    if (!box) return;
-    const tagMode = mode === "hanzi" ? "meaning" : mode;
-    box.onclick = (e) => {
-      const btn = e.target.closest("[data-tag]");
-      if (!btn) return;
-      toggleTag(tagMode, item.id, btn.dataset.tag);
-      showTagPicker = true;
-      renderCard();
-      if (answered) {
-        // restore answered UI lightly
-        answered = true;
-        reveal(choices.findIndex((c) => c.correct) >= 0 ? null : null);
-      }
-    };
-    // Fix: after re-render from tagging mid-answer, need better approach
-    document.getElementById("btnCustomTag")?.addEventListener("click", () => {
-      const t = prompt("Nhập tag mới:");
-      if (!t || !t.trim()) return;
-      toggleTag(tagMode, item.id, t.trim());
-      showTagPicker = true;
-      const wasAnswered = answered;
-      const snapshotChoices = choices;
-      renderCard();
-      if (wasAnswered) {
-        answered = true;
-        choices = snapshotChoices;
-        // re-apply choice state
-        const buttons = [...document.querySelectorAll(".choice")];
-        buttons.forEach((btn, i) => {
-          btn.disabled = true;
-          if (choices[i]?.correct) btn.classList.add("correct");
-        });
-        document.getElementById("btnNext").disabled = false;
-      }
-    });
-  }
-
   function renderCard() {
-    const tags = getTags(mode === "hanzi" ? "meaning" : mode, current.id);
-    const tagSummary = tags.length
-      ? `<div class="item-tags" style="justify-content:center;margin-top:10px">${tags.map((t) => `<span>${escapeHtml(t)}</span>`).join("")}</div>`
-      : "";
+    const fm = flagMode();
+    const flaggedNow = isFlagged(fm, current.id);
+    const flagBadge = flaggedNow ? `<div><span class="flag-badge">⚑ Đã gắn cờ — sẽ học lại sau</span></div>` : "";
+    const flagBtn = `<button class="pinyin-toggle${flaggedNow ? " flag-on" : ""}" type="button" id="btnToggleFlag">${flaggedNow ? "Bỏ cờ" : "Gắn cờ"}</button>`;
 
     let promptHtml = "";
     if (mode === "meaning") {
@@ -1213,9 +1154,9 @@ select:focus {
         <p class="pinyin reveal" id="promptPinyin"${showPinyin ? "" : " hidden"}>${escapeHtml(current.pinyin)}</p>
         <div class="card-tools">
           <button class="pinyin-toggle" type="button" id="btnTogglePinyin" aria-pressed="${showPinyin ? "true" : "false"}">${showPinyin ? "Ẩn pinyin" : "Hiện pinyin"}</button>
-          <button class="pinyin-toggle" type="button" id="btnToggleTags">${showTagPicker ? "Ẩn tag" : "Gắn tag"}</button>
+          ${flagBtn}
         </div>
-        ${tagSummary}${tagPickerHtml(current)}
+        ${flagBadge}
         <p class="hint">Chọn nghĩa tiếng Việt đúng</p>`;
     } else if (mode === "sentence") {
       promptHtml = `
@@ -1224,19 +1165,17 @@ select:focus {
         <p class="pinyin reveal sentence" id="promptPinyin"${showPinyin ? "" : " hidden"}>${escapeHtml(current.pinyin)}</p>
         <div class="card-tools">
           <button class="pinyin-toggle" type="button" id="btnTogglePinyin" aria-pressed="${showPinyin ? "true" : "false"}">${showPinyin ? "Ẩn pinyin" : "Hiện pinyin"}</button>
-          <button class="pinyin-toggle" type="button" id="btnToggleTags">${showTagPicker ? "Ẩn tag" : "Gắn tag"}</button>
+          ${flagBtn}
         </div>
-        ${tagSummary}${tagPickerHtml(current)}
+        ${flagBadge}
         <p class="hint">Chọn bản dịch tiếng Việt đúng</p>`;
     } else {
       promptHtml = `
         <p class="meta">${escapeHtml(current.book)} · ${escapeHtml(current.lesson)} · ${escapeHtml(current.title)}</p>
         <p class="pinyin">${escapeHtml(current.pinyin)}</p>
         <p class="meaning">${escapeHtml(current.meaning)}</p>
-        <div class="card-tools">
-          <button class="pinyin-toggle" type="button" id="btnToggleTags">${showTagPicker ? "Ẩn tag" : "Gắn tag"}</button>
-        </div>
-        ${tagSummary}${tagPickerHtml(current)}
+        <div class="card-tools">${flagBtn}</div>
+        ${flagBadge}
         <p class="hint">Chọn Hán tự đúng</p>`;
     }
 
@@ -1272,61 +1211,11 @@ select:focus {
       if (showPinyin) notePinyinReveal(current);
     });
 
-    document.getElementById("btnToggleTags")?.addEventListener("click", () => {
-      showTagPicker = !showTagPicker;
-      const wasAnswered = answered;
-      const chosenIdx = wasAnswered
-        ? [...document.querySelectorAll(".choice")].findIndex((b) => b.classList.contains("wrong") || (b.classList.contains("correct") && choices[[...document.querySelectorAll(".choice")].indexOf(b)]?.correct))
-        : -1;
-      // simpler: remember if answered and which feedback
-      const fbText = document.getElementById("feedback")?.textContent || "";
-      const fbClass = document.getElementById("feedback")?.className || "";
-      renderCard();
-      if (wasAnswered) {
-        answered = true;
-        const buttons = [...document.querySelectorAll(".choice")];
-        buttons.forEach((btn, i) => {
-          btn.disabled = true;
-          if (choices[i].correct) btn.classList.add("correct");
-        });
-        const fb = document.getElementById("feedback");
-        fb.className = fbClass || "feedback";
-        fb.textContent = fbText;
-        document.getElementById("btnNext").disabled = false;
-      }
-    });
-
-    // tag chip clicks
-    const tagMode = mode === "hanzi" ? "meaning" : mode;
-    document.getElementById("tagChips")?.addEventListener("click", (e) => {
-      const btn = e.target.closest("[data-tag]");
-      if (!btn) return;
+    document.getElementById("btnToggleFlag")?.addEventListener("click", () => {
       const wasAnswered = answered;
       const fbText = document.getElementById("feedback")?.textContent || "";
       const fbClass = document.getElementById("feedback")?.className || "";
-      toggleTag(tagMode, current.id, btn.dataset.tag);
-      showTagPicker = true;
-      renderCard();
-      if (wasAnswered) {
-        answered = true;
-        [...document.querySelectorAll(".choice")].forEach((b, i) => {
-          b.disabled = true;
-          if (choices[i].correct) b.classList.add("correct");
-        });
-        const fb = document.getElementById("feedback");
-        fb.className = fbClass || "feedback";
-        fb.textContent = fbText;
-        document.getElementById("btnNext").disabled = false;
-      }
-    });
-    document.getElementById("btnCustomTag")?.addEventListener("click", () => {
-      const t = prompt("Nhập tag mới:");
-      if (!t || !t.trim()) return;
-      const wasAnswered = answered;
-      const fbText = document.getElementById("feedback")?.textContent || "";
-      const fbClass = document.getElementById("feedback")?.className || "";
-      toggleTag(tagMode, current.id, t.trim());
-      showTagPicker = true;
+      toggleFlag(fm, current.id);
       renderCard();
       if (wasAnswered) {
         answered = true;
@@ -1419,7 +1308,7 @@ select:focus {
     });
     if (journalView === "session") renderJournalSession();
     else if (journalView === "pinyin") renderJournalPinyin();
-    else if (journalView === "tags") renderJournalTags();
+    else if (journalView === "flags") renderJournalFlags();
     else renderJournalHistory();
   }
 
@@ -1444,7 +1333,7 @@ select:focus {
           <span>Sai: <strong>${open.wrong || 0}</strong></span>
           <span>Chuỗi max: <strong>${open.bestStreak || 0}</strong></span>
           <span>Xem pinyin: <strong>${(open.pinyinReveals || []).length}</strong></span>
-          <span>Tag: <strong>${(open.tagEvents || []).length}</strong></span>
+          <span>Gắn cờ: <strong>${(open.flagEvents || []).length}</strong></span>
         </div>
       </div>
       <div class="prompt" style="padding:16px">
@@ -1493,36 +1382,29 @@ select:focus {
     };
   }
 
-  function renderJournalTags() {
-    const entries = Object.entries(tagMap).map(([key, tags]) => {
+  function renderJournalFlags() {
+    const entries = flagged.map((key) => {
       const [m, idStr] = key.split(":");
       const id = Number(idStr);
       const item = itemByIdInMode(id, m);
-      return item ? { m, item, tags } : null;
+      return item ? { m, item } : null;
     }).filter(Boolean);
     els.stage.innerHTML = `
       <div class="session-card">
-        <h3>Đã gắn tag</h3>
-        <p>Gắn chủ động khi ôn bằng nút Gắn tag. Tag sẵn: ${PRESET_TAGS.map(escapeHtml).join(", ")}.</p>
+        <h3>Đã gắn cờ</h3>
+        <p>Những mục bạn chủ động gắn cờ để học lại sau. Bấm lại nút <strong>Bỏ cờ</strong> trên thẻ để gỡ.</p>
         <div class="row"><span>Tổng: <strong>${entries.length}</strong></span></div>
       </div>
       ${entries.length
-        ? `<div class="wrong-list">${entries.map(({ m, item, tags }) => `
-            <div class="wrong-item">
-              <span class="hanzi-opt">${escapeHtml(item.hanzi)}</span>
-              <span class="py">${escapeHtml(item.pinyin)} · ${escapeHtml(MODE_LABEL[m] || m)}</span>
-              <span class="mn">${escapeHtml(item.meaning)}
-                <span class="item-tags">${tags.map((t) => `<span>${escapeHtml(t)}</span>`).join("")}</span>
-              </span>
-            </div>`).join("")}</div>`
-        : `<div class="empty">Chưa gắn tag nào.</div>`}
+        ? `<div class="wrong-list">${entries.map(({ m, item }) => itemRow(item, m)).join("")}</div>`
+        : `<div class="empty">Chưa gắn cờ mục nào.</div>`}
       <div class="actions">
-        <button class="btn danger-ghost" type="button" id="btnClearTags" ${entries.length ? "" : "disabled"}>Xóa hết tag</button>
+        <button class="btn danger-ghost" type="button" id="btnClearFlags" ${entries.length ? "" : "disabled"}>Xóa hết cờ</button>
       </div>`;
-    document.getElementById("btnClearTags")?.addEventListener("click", () => {
-      if (!confirm("Xóa toàn bộ tag?")) return;
-      tagMap = {};
-      saveJSON(KEYS.tags, tagMap);
+    document.getElementById("btnClearFlags")?.addEventListener("click", () => {
+      if (!confirm("Xóa toàn bộ cờ đã gắn?")) return;
+      flagged = [];
+      saveJSON(KEYS.flags, flagged);
       renderJournal();
     });
   }
@@ -1545,7 +1427,7 @@ select:focus {
             <span>Đúng ${s.correct || 0}/${(s.correct || 0) + (s.wrong || 0)}</span>
             <span>Xem pinyin ${(s.pinyinReveals || []).length}</span>
             <span>Sai ${(s.wrongIds || []).length}</span>
-            <span>Tag ${(s.tagEvents || []).length}</span>
+            <span>Cờ ${(s.flagEvents || []).length}</span>
           </div>
         </div>`).join("")}</div>
       <div class="actions">
@@ -1569,7 +1451,6 @@ select:focus {
       reviewingPinyin = false;
     }
     mode = next;
-    showTagPicker = false;
     updateChrome();
     els.tabs.forEach((t) => {
       const active = t.dataset.mode === mode;
