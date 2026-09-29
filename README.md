@@ -6,7 +6,8 @@ Vocabulary sheets and source scripts for the HSK learning path.
 
 This branch contains generated vocabulary materials for:
 
-- Hán 1 / 汉语教程 第一册（上）
-- Hán 2 / 汉语教程 第一册（下）
+- `hsk1/`: Hán 1 / 汉语教程 第一册（上） source PDF, generated PDF/HTML/CSV, and generator script.
+- `hsk2/`: Hán 2 / 汉语教程 第一册（下） source PDF, generated PDF/HTML/CSV, and generator script.
+- Repository root: combined Hán 1 + Hán 2 PDF/HTML/CSV.
 
-Outputs include landscape PDF slide decks, HTML versions, and CSV files for spreadsheet editing.
+Numbering is continuous inside each book file, and continuous from Hán 1 into Hán 2 in the combined files.
