@@ -1,0 +1,767 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HSK Flashcards — Ôn từ vựng</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=Noto+Serif+SC:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #14213d;
+  --muted: #5f6f82;
+  --line: #d6dee8;
+  --paper: #f4f7fb;
+  --card: #ffffff;
+  --teal: #2a9d8f;
+  --teal-dark: #1f7a6f;
+  --teal-soft: #e8f6f3;
+  --ok: #1b7f5a;
+  --ok-bg: #e6f6ef;
+  --bad: #b42318;
+  --bad-bg: #fdeceb;
+  --shadow: 0 10px 30px rgba(20, 33, 61, 0.08);
+  --radius: 18px;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; min-height: 100%; }
+body {
+  font-family: "Be Vietnam Pro", sans-serif;
+  color: var(--ink);
+  background:
+    radial-gradient(900px 420px at 8% -10%, #d9f0eb 0%, transparent 55%),
+    radial-gradient(700px 380px at 100% 0%, #dce7f7 0%, transparent 50%),
+    linear-gradient(180deg, #eef3f8 0%, var(--paper) 40%, #e9eef5 100%);
+}
+
+.app {
+  width: min(720px, calc(100% - 28px));
+  margin: 0 auto;
+  padding: 28px 0 48px;
+}
+
+.brand {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 22px;
+}
+.brand .eyebrow {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--teal);
+}
+.brand h1 {
+  margin: 0;
+  font-size: clamp(28px, 5vw, 36px);
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+}
+.brand p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.5;
+  max-width: 38em;
+}
+
+.panel {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+.tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border-bottom: 1px solid var(--line);
+  background: #fbfcfe;
+}
+.tab {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  padding: 16px 12px;
+  font: inherit;
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--muted);
+  cursor: pointer;
+  position: relative;
+  transition: color .15s ease, background .15s ease;
+}
+.tab:hover { color: var(--ink); background: #f3f7fb; }
+.tab.active {
+  color: var(--teal-dark);
+  background: #fff;
+}
+.tab.active::after {
+  content: "";
+  position: absolute;
+  left: 18%;
+  right: 18%;
+  bottom: 0;
+  height: 3px;
+  border-radius: 3px 3px 0 0;
+  background: var(--teal);
+}
+
+.controls {
+  display: grid;
+  gap: 12px;
+  padding: 16px 18px 0;
+}
+.control-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+label {
+  display: grid;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+}
+select {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 10px 12px;
+  font: inherit;
+  font-size: 14px;
+  color: var(--ink);
+  background: #fff;
+  outline: none;
+}
+select:focus {
+  border-color: var(--teal);
+  box-shadow: 0 0 0 3px rgba(42, 157, 143, 0.18);
+}
+
+.stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+  padding: 14px 18px 0;
+  font-size: 13px;
+  color: var(--muted);
+}
+.stats strong { color: var(--ink); font-weight: 700; }
+.progress {
+  margin: 12px 18px 0;
+  height: 6px;
+  border-radius: 999px;
+  background: #e8eef5;
+  overflow: hidden;
+}
+.progress > span {
+  display: block;
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--teal), #4db6ac);
+  transition: width .25s ease;
+}
+
+.stage {
+  padding: 22px 18px 18px;
+  min-height: 420px;
+  display: grid;
+  align-content: start;
+  gap: 18px;
+}
+
+.prompt {
+  text-align: center;
+  padding: 28px 16px;
+  border-radius: 16px;
+  background:
+    linear-gradient(180deg, rgba(232, 246, 243, 0.85), rgba(255,255,255,0.4)),
+    #f8fbfd;
+  border: 1px solid #e1ebe8;
+}
+.prompt .meta {
+  margin: 0 0 10px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+  letter-spacing: 0.02em;
+}
+.prompt .hanzi {
+  margin: 0;
+  font-family: "Noto Serif SC", "Songti SC", serif;
+  font-size: clamp(48px, 12vw, 72px);
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--ink);
+}
+.prompt .pinyin {
+  margin: 10px 0 0;
+  font-size: clamp(22px, 5vw, 28px);
+  font-weight: 600;
+  color: var(--teal-dark);
+}
+.prompt .pinyin.reveal {
+  margin-top: 8px;
+  font-size: clamp(18px, 4vw, 24px);
+  min-height: 1.2em;
+}
+.prompt .pinyin.reveal[hidden] {
+  display: none;
+}
+.prompt .meaning {
+  margin: 8px 0 0;
+  font-size: 18px;
+  color: var(--ink);
+  line-height: 1.4;
+}
+.prompt .hint {
+  margin: 12px 0 0;
+  font-size: 13px;
+  color: var(--muted);
+}
+.prompt .pinyin-toggle {
+  margin-top: 14px;
+  appearance: none;
+  border: 1px solid #b7d5cf;
+  background: #fff;
+  color: var(--teal-dark);
+  border-radius: 999px;
+  padding: 8px 14px;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background .15s ease, border-color .15s ease;
+}
+.prompt .pinyin-toggle:hover {
+  background: var(--teal-soft);
+  border-color: var(--teal);
+}
+.prompt .pinyin-toggle[aria-pressed="true"] {
+  background: var(--teal-soft);
+  border-color: var(--teal);
+}
+
+.choices {
+  display: grid;
+  gap: 10px;
+}
+.choice {
+  appearance: none;
+  width: 100%;
+  text-align: left;
+  border: 1px solid var(--line);
+  background: #fff;
+  border-radius: 14px;
+  padding: 14px 16px;
+  font: inherit;
+  font-size: 16px;
+  color: var(--ink);
+  cursor: pointer;
+  transition: transform .12s ease, border-color .12s ease, background .12s ease, box-shadow .12s ease;
+}
+.choice:hover:not(:disabled) {
+  border-color: #9fc9c2;
+  box-shadow: 0 4px 14px rgba(42, 157, 143, 0.12);
+  transform: translateY(-1px);
+}
+.choice:disabled { cursor: default; }
+.choice.correct {
+  border-color: var(--ok);
+  background: var(--ok-bg);
+  color: var(--ok);
+  font-weight: 600;
+}
+.choice.wrong {
+  border-color: var(--bad);
+  background: var(--bad-bg);
+  color: var(--bad);
+}
+.choice .hanzi-opt {
+  font-family: "Noto Serif SC", "Songti SC", serif;
+  font-size: 26px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+.choice .sub {
+  display: block;
+  margin-top: 4px;
+  font-size: 13px;
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: space-between;
+  align-items: center;
+}
+.btn {
+  appearance: none;
+  border: 0;
+  border-radius: 12px;
+  padding: 12px 16px;
+  font: inherit;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background .15s ease, transform .12s ease, opacity .15s ease;
+}
+.btn:active { transform: translateY(1px); }
+.btn.primary {
+  background: var(--teal);
+  color: #fff;
+}
+.btn.primary:hover { background: var(--teal-dark); }
+.btn.ghost {
+  background: transparent;
+  color: var(--muted);
+  border: 1px solid var(--line);
+}
+.btn.ghost:hover { color: var(--ink); background: #f5f8fb; }
+.btn:disabled { opacity: 0.45; cursor: not-allowed; }
+
+.feedback {
+  min-height: 22px;
+  font-size: 14px;
+  font-weight: 600;
+}
+.feedback.ok { color: var(--ok); }
+.feedback.bad { color: var(--bad); }
+
+.empty, .loading, .error {
+  text-align: center;
+  padding: 48px 16px;
+  color: var(--muted);
+}
+.error { color: var(--bad); }
+
+.footer-note {
+  margin-top: 16px;
+  text-align: center;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+@media (max-width: 560px) {
+  .control-row { grid-template-columns: 1fr; }
+  .tab { font-size: 13px; padding: 14px 8px; }
+  .stage { min-height: 0; }
+}
+</style>
+</head>
+<body>
+  <main class="app">
+    <header class="brand">
+      <div class="eyebrow">Mastering HSK</div>
+      <h1>Flashcards ôn thi</h1>
+      <p>Hai chế độ: nhìn Hán tự chọn nghĩa, hoặc nhìn pinyin + nghĩa chọn đúng Hán tự. Lọc theo sách / bài để ôn có chủ đích.</p>
+    </header>
+
+    <section class="panel" aria-live="polite">
+      <div class="tabs" role="tablist">
+        <button class="tab active" id="tab-meaning" role="tab" aria-selected="true" data-mode="meaning">Hán tự → Nghĩa</button>
+        <button class="tab" id="tab-hanzi" role="tab" aria-selected="false" data-mode="hanzi">Pinyin + Nghĩa → Hán tự</button>
+      </div>
+
+      <div class="controls">
+        <div class="control-row">
+          <label>Sách
+            <select id="bookFilter">
+              <option value="all">Tất cả (Hán 1 + Hán 2)</option>
+              <option value="Hán 1">Hán 1</option>
+              <option value="Hán 2">Hán 2</option>
+            </select>
+          </label>
+          <label>Bài
+            <select id="lessonFilter">
+              <option value="all">Tất cả các bài</option>
+            </select>
+          </label>
+        </div>
+      </div>
+
+      <div class="stats">
+        <span>Đúng: <strong id="scoreCorrect">0</strong></span>
+        <span>Sai: <strong id="scoreWrong">0</strong></span>
+        <span>Chuỗi: <strong id="scoreStreak">0</strong></span>
+        <span>Còn lại: <strong id="scoreLeft">0</strong></span>
+      </div>
+      <div class="progress" aria-hidden="true"><span id="progressBar"></span></div>
+
+      <div class="stage" id="stage">
+        <div class="loading">Đang tải từ vựng…</div>
+      </div>
+    </section>
+
+    <p class="footer-note">Dữ liệu từ <code>Han1_Han2_tu_vung_gop.csv</code> · phím tắt 1–4 chọn đáp án, Enter / Space câu tiếp</p>
+  </main>
+
+<script>
+(() => {
+  const CHOICE_COUNT = 4;
+  let allWords = [];
+  let pool = [];
+  let queue = [];
+  let current = null;
+  let choices = [];
+  let answered = false;
+  let mode = "meaning"; // meaning | hanzi
+  let showPinyin = false;
+  let correct = 0;
+  let wrong = 0;
+  let streak = 0;
+  let bestStreak = 0;
+  let sessionTotal = 0;
+
+  const els = {
+    stage: document.getElementById("stage"),
+    book: document.getElementById("bookFilter"),
+    lesson: document.getElementById("lessonFilter"),
+    scoreCorrect: document.getElementById("scoreCorrect"),
+    scoreWrong: document.getElementById("scoreWrong"),
+    scoreStreak: document.getElementById("scoreStreak"),
+    scoreLeft: document.getElementById("scoreLeft"),
+    progressBar: document.getElementById("progressBar"),
+    tabs: [...document.querySelectorAll(".tab")],
+  };
+
+  function shuffle(arr) {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  function uniqueBy(arr, keyFn) {
+    const seen = new Set();
+    const out = [];
+    for (const item of arr) {
+      const k = keyFn(item);
+      if (!k || seen.has(k)) continue;
+      seen.add(k);
+      out.push(item);
+    }
+    return out;
+  }
+
+  function lessonKey(w) {
+    return `${w.book}::${w.lesson}`;
+  }
+
+  function lessonLabel(w) {
+    return `${w.book} · ${w.lesson}`;
+  }
+
+  function rebuildLessonOptions() {
+    const book = els.book.value;
+    const filtered = book === "all" ? allWords : allWords.filter((w) => w.book === book);
+    const lessons = uniqueBy(
+      filtered.sort((a, b) => a.id - b.id),
+      (w) => lessonKey(w)
+    );
+    const prev = els.lesson.value;
+    els.lesson.innerHTML = '<option value="all">Tất cả các bài</option>' +
+      lessons.map((w) => `<option value="${lessonKey(w)}">${lessonLabel(w)} — ${w.title}</option>`).join("");
+    if ([...els.lesson.options].some((o) => o.value === prev)) {
+      els.lesson.value = prev;
+    }
+  }
+
+  function filteredPool() {
+    const book = els.book.value;
+    const lesson = els.lesson.value;
+    return allWords.filter((w) => {
+      if (book !== "all" && w.book !== book) return false;
+      if (lesson !== "all" && lessonKey(w) !== lesson) return false;
+      return true;
+    });
+  }
+
+  function resetSession() {
+    pool = filteredPool();
+    if (mode === "meaning") {
+      pool = uniqueBy(pool, (w) => w.hanzi + "||" + w.meaning);
+    } else {
+      pool = uniqueBy(pool, (w) => w.hanzi);
+    }
+    queue = shuffle(pool);
+    sessionTotal = queue.length;
+    correct = 0;
+    wrong = 0;
+    streak = 0;
+    updateStats();
+    nextCard();
+  }
+
+  function updateStats() {
+    els.scoreCorrect.textContent = String(correct);
+    els.scoreWrong.textContent = String(wrong);
+    els.scoreStreak.textContent = String(streak);
+    els.scoreLeft.textContent = String(queue.length + (current && !answered ? 1 : 0));
+    const done = correct + wrong;
+    const pct = sessionTotal ? Math.min(100, (done / sessionTotal) * 100) : 0;
+    els.progressBar.style.width = `${pct}%`;
+  }
+
+  function pickDistractors(answer, keyFn) {
+    const answerKey = keyFn(answer);
+    const candidates = shuffle(
+      pool.filter((w) => keyFn(w) !== answerKey)
+    );
+    const picked = [];
+    const seen = new Set([answerKey]);
+    for (const c of candidates) {
+      const k = keyFn(c);
+      if (seen.has(k)) continue;
+      seen.add(k);
+      picked.push(c);
+      if (picked.length >= CHOICE_COUNT - 1) break;
+    }
+    // fallback from full bank if pool too small
+    if (picked.length < CHOICE_COUNT - 1) {
+      for (const c of shuffle(allWords)) {
+        const k = keyFn(c);
+        if (seen.has(k)) continue;
+        seen.add(k);
+        picked.push(c);
+        if (picked.length >= CHOICE_COUNT - 1) break;
+      }
+    }
+    return picked;
+  }
+
+  function buildChoices(answer) {
+    if (mode === "meaning") {
+      const distractors = pickDistractors(answer, (w) => w.meaning);
+      return shuffle([answer, ...distractors]).map((w) => ({
+        id: w.id,
+        label: w.meaning,
+        correct: w.meaning === answer.meaning,
+      }));
+    }
+    const distractors = pickDistractors(answer, (w) => w.hanzi);
+    return shuffle([answer, ...distractors]).map((w) => ({
+      id: w.id,
+      label: w.hanzi,
+      correct: w.hanzi === answer.hanzi,
+      isHanzi: true,
+    }));
+  }
+
+  function nextCard() {
+    answered = false;
+    if (!pool.length) {
+      els.stage.innerHTML = `<div class="empty">Không có từ nào trong bộ lọc hiện tại.</div>`;
+      current = null;
+      updateStats();
+      return;
+    }
+    if (!queue.length) {
+      renderDone();
+      current = null;
+      updateStats();
+      return;
+    }
+    current = queue.shift();
+    choices = buildChoices(current);
+    renderCard();
+    updateStats();
+  }
+
+  function renderDone() {
+    const total = correct + wrong;
+    const rate = total ? Math.round((correct / total) * 100) : 0;
+    els.stage.innerHTML = `
+      <div class="prompt">
+        <p class="meta">Hoàn thành lượt ôn</p>
+        <p class="pinyin">${correct}/${total} đúng · ${rate}%</p>
+        <p class="hint">Chuỗi dài nhất: ${bestStreak}</p>
+      </div>
+      <div class="actions">
+        <button class="btn ghost" type="button" id="btnShuffle">Xáo lại cùng bộ lọc</button>
+        <button class="btn primary" type="button" id="btnRestart">Ôn lại từ đầu</button>
+      </div>
+    `;
+    document.getElementById("btnRestart").onclick = resetSession;
+    document.getElementById("btnShuffle").onclick = resetSession;
+  }
+
+  function renderCard() {
+    const meta = `${current.book} · ${current.lesson} · ${current.title}`;
+    const promptHtml = mode === "meaning"
+      ? `
+        <p class="meta">${meta}</p>
+        <p class="hanzi">${escapeHtml(current.hanzi)}</p>
+        <p class="pinyin reveal" id="promptPinyin"${showPinyin ? "" : " hidden"}>${escapeHtml(current.pinyin)}</p>
+        <button class="pinyin-toggle" type="button" id="btnTogglePinyin" aria-pressed="${showPinyin ? "true" : "false"}">
+          ${showPinyin ? "Ẩn pinyin" : "Hiện pinyin"}
+        </button>
+        <p class="hint">Chọn nghĩa tiếng Việt đúng</p>
+      `
+      : `
+        <p class="meta">${meta}</p>
+        <p class="pinyin">${escapeHtml(current.pinyin)}</p>
+        <p class="meaning">${escapeHtml(current.meaning)}</p>
+        <p class="hint">Chọn Hán tự đúng</p>
+      `;
+
+    const choicesHtml = choices.map((c, i) => `
+      <button class="choice" type="button" data-idx="${i}">
+        ${c.isHanzi
+          ? `<span class="hanzi-opt">${i + 1}. ${escapeHtml(c.label)}</span>`
+          : `<span>${i + 1}. ${escapeHtml(c.label)}</span>`}
+      </button>
+    `).join("");
+
+    els.stage.innerHTML = `
+      <div class="prompt">${promptHtml}</div>
+      <div class="choices" id="choices">${choicesHtml}</div>
+      <div class="feedback" id="feedback"></div>
+      <div class="actions">
+        <button class="btn ghost" type="button" id="btnSkip">Bỏ qua</button>
+        <button class="btn primary" type="button" id="btnNext" disabled>Câu tiếp</button>
+      </div>
+    `;
+
+    document.getElementById("choices").onclick = (e) => {
+      const btn = e.target.closest(".choice");
+      if (!btn || answered) return;
+      onAnswer(Number(btn.dataset.idx));
+    };
+    const toggleBtn = document.getElementById("btnTogglePinyin");
+    if (toggleBtn) {
+      toggleBtn.onclick = () => {
+        showPinyin = !showPinyin;
+        const py = document.getElementById("promptPinyin");
+        if (py) py.hidden = !showPinyin;
+        toggleBtn.setAttribute("aria-pressed", showPinyin ? "true" : "false");
+        toggleBtn.textContent = showPinyin ? "Ẩn pinyin" : "Hiện pinyin";
+      };
+    }
+    document.getElementById("btnNext").onclick = () => nextCard();
+    document.getElementById("btnSkip").onclick = () => {
+      if (answered) {
+        nextCard();
+        return;
+      }
+      wrong += 1;
+      streak = 0;
+      answered = true;
+      reveal(null);
+      updateStats();
+    };
+  }
+
+  function onAnswer(idx) {
+    if (answered || !current) return;
+    answered = true;
+    const chosen = choices[idx];
+    if (chosen.correct) {
+      correct += 1;
+      streak += 1;
+      bestStreak = Math.max(bestStreak, streak);
+    } else {
+      wrong += 1;
+      streak = 0;
+    }
+    reveal(idx);
+    updateStats();
+  }
+
+  function reveal(chosenIdx) {
+    const buttons = [...document.querySelectorAll(".choice")];
+    buttons.forEach((btn, i) => {
+      btn.disabled = true;
+      if (choices[i].correct) btn.classList.add("correct");
+      else if (i === chosenIdx) btn.classList.add("wrong");
+    });
+    const fb = document.getElementById("feedback");
+    const next = document.getElementById("btnNext");
+    if (chosenIdx === null) {
+      fb.className = "feedback bad";
+      fb.textContent = mode === "meaning"
+        ? `Đáp án: ${current.meaning}`
+        : `Đáp án: ${current.hanzi} (${current.pinyin})`;
+    } else if (choices[chosenIdx].correct) {
+      fb.className = "feedback ok";
+      fb.textContent = "Đúng!";
+    } else {
+      fb.className = "feedback bad";
+      fb.textContent = mode === "meaning"
+        ? `Sai. Nghĩa đúng: ${current.meaning}`
+        : `Sai. Hán tự đúng: ${current.hanzi}`;
+    }
+    next.disabled = false;
+    next.focus();
+  }
+
+  function escapeHtml(s) {
+    return String(s)
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;");
+  }
+
+  function setMode(next) {
+    mode = next;
+    els.tabs.forEach((t) => {
+      const active = t.dataset.mode === mode;
+      t.classList.toggle("active", active);
+      t.setAttribute("aria-selected", active ? "true" : "false");
+    });
+    resetSession();
+  }
+
+  els.tabs.forEach((t) => {
+    t.addEventListener("click", () => setMode(t.dataset.mode));
+  });
+  els.book.addEventListener("change", () => {
+    rebuildLessonOptions();
+    resetSession();
+  });
+  els.lesson.addEventListener("change", resetSession);
+
+  document.addEventListener("keydown", (e) => {
+    if (!current) return;
+    if (e.target.matches("select, input, textarea")) return;
+    if (!answered && ["1", "2", "3", "4"].includes(e.key)) {
+      const idx = Number(e.key) - 1;
+      if (idx < choices.length) onAnswer(idx);
+      return;
+    }
+    if (answered && (e.key === "Enter" || e.key === " ")) {
+      e.preventDefault();
+      nextCard();
+    }
+  });
+
+  async function init() {
+    try {
+      const res = await fetch("./vocab.json", { cache: "no-cache" });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      allWords = await res.json();
+      rebuildLessonOptions();
+      resetSession();
+    } catch (err) {
+      els.stage.innerHTML = `<div class="error">Không tải được vocab.json.<br>${escapeHtml(err.message)}</div>`;
+    }
+  }
+
+  init();
+})();
+</script>
+</body>
+</html>
