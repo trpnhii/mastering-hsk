@@ -1,0 +1,17 @@
+# Local OCR/render scratch outputs
+ocr_pages/
+ocr_output/
+vocab_pages_300/
+vocab_ocr_300/
+han2_ocr_pages/
+han2_ocr_output/
+han2_vocab_pages_300/
+han2_vocab_ocr_300/
+
+# Python/local tooling
+.venv_ocr/
+__pycache__/
+*.pyc
+
+# OS/editor noise
+.DS_Store
