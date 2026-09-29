@@ -15,3 +15,7 @@ __pycache__/
 
 # OS/editor noise
 .DS_Store
+/hsk3_ocr_output
+/hsk3_ocr_pages
+/hsk3_vocab_pages_300
+/hsk3_vocab_ocr_300

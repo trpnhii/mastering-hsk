@@ -19,7 +19,10 @@ App nằm trong `docs/`:
 
 - Tab **Hán tự → Nghĩa**: hiện chữ Hán, chọn nghĩa đúng (nút hiện/ẩn pinyin)
 - Tab **Pinyin + Nghĩa → Hán tự**: hiện pinyin + nghĩa, chọn Hán tự đúng
-- Lọc theo sách / bài; phím `1–4` chọn đáp án, `Enter` / `Space` sang câu tiếp
+- Tab **Câu → Nghĩa**: hiện câu Hán ngắn (HSK 3), chọn bản dịch; có nút hiện/ẩn pinyin
+- Lọc theo sách / bài (tab từ); ngân hàng mục sai để ôn lại; phím `1–4` / `Enter` / `Space`
+
+Câu dịch nằm trong `docs/sentences.json` — thêm object `{ id, hanzi, pinyin, meaning, level }` để mở rộng.
 
 Cập nhật dữ liệu quiz sau khi sửa CSV (local):
 

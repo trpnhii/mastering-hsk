@@ -43,7 +43,7 @@ jobs:
       - name: Prepare site
         run: |
           mkdir -p _site
-          cp docs/index.html docs/vocab.json docs/.nojekyll _site/
+          cp docs/index.html docs/vocab.json docs/sentences.json docs/.nojekyll _site/
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3

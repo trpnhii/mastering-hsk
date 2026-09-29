@@ -1,0 +1,86 @@
+[
+  {
+    "id": 1,
+    "hanzi": "你最近怎么样？",
+    "pinyin": "Nǐ zuìjìn zěnmeyàng?",
+    "meaning": "Dạo này bạn thế nào?",
+    "level": "HSK3"
+  },
+  {
+    "id": 2,
+    "hanzi": "今天天气很好。",
+    "pinyin": "Jīntiān tiānqì hěn hǎo.",
+    "meaning": "Hôm nay thời tiết rất đẹp.",
+    "level": "HSK3"
+  },
+  {
+    "id": 3,
+    "hanzi": "你想喝什么？",
+    "pinyin": "Nǐ xiǎng hē shénme?",
+    "meaning": "Bạn muốn uống gì?",
+    "level": "HSK3"
+  },
+  {
+    "id": 4,
+    "hanzi": "我明天要考试。",
+    "pinyin": "Wǒ míngtiān yào kǎoshì.",
+    "meaning": "Ngày mai tôi phải thi.",
+    "level": "HSK3"
+  },
+  {
+    "id": 5,
+    "hanzi": "请再说一遍。",
+    "pinyin": "Qǐng zài shuō yí biàn.",
+    "meaning": "Xin hãy nói lại một lần.",
+    "level": "HSK3"
+  },
+  {
+    "id": 6,
+    "hanzi": "图书馆怎么走？",
+    "pinyin": "Túshūguǎn zěnme zǒu?",
+    "meaning": "Thư viện đi đường nào?",
+    "level": "HSK3"
+  },
+  {
+    "id": 7,
+    "hanzi": "这个问题不难。",
+    "pinyin": "Zhège wèntí bù nán.",
+    "meaning": "Câu hỏi này không khó.",
+    "level": "HSK3"
+  },
+  {
+    "id": 8,
+    "hanzi": "他正在学习汉语。",
+    "pinyin": "Tā zhèngzài xuéxí Hànyǔ.",
+    "meaning": "Anh ấy đang học tiếng Hán.",
+    "level": "HSK3"
+  },
+  {
+    "id": 9,
+    "hanzi": "我们一起吃饭吧。",
+    "pinyin": "Wǒmen yìqǐ chīfàn ba.",
+    "meaning": "Chúng ta cùng ăn cơm đi.",
+    "level": "HSK3"
+  },
+  {
+    "id": 10,
+    "hanzi": "我把书放在桌子上了。",
+    "pinyin": "Wǒ bǎ shū fàng zài zhuōzi shàng le.",
+    "meaning": "Tôi đã để sách lên bàn.",
+    "level": "HSK3"
+  },
+  {
+    "id": 11,
+    "hanzi": "你会说英语吗？",
+    "pinyin": "Nǐ huì shuō Yīngyǔ ma?",
+    "meaning": "Bạn có biết nói tiếng Anh không?",
+    "level": "HSK3"
+  },
+  {
+    "id": 12,
+    "hanzi": "现在几点了？",
+    "pinyin": "Xiànzài jǐ diǎn le?",
+    "meaning": "Bây giờ mấy giờ rồi?",
+    "level": "HSK3"
+  }
+]
