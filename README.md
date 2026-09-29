@@ -17,19 +17,23 @@ Numbering is continuous inside each book file, and continuous from Hán 1 into H
 
 App nằm trong `docs/`:
 
-- Tab **Hán tự → Nghĩa**: hiện chữ Hán, chọn nghĩa đúng
+- Tab **Hán tự → Nghĩa**: hiện chữ Hán, chọn nghĩa đúng (nút hiện/ẩn pinyin)
 - Tab **Pinyin + Nghĩa → Hán tự**: hiện pinyin + nghĩa, chọn Hán tự đúng
 - Lọc theo sách / bài; phím `1–4` chọn đáp án, `Enter` / `Space` sang câu tiếp
 
-Cập nhật dữ liệu quiz sau khi sửa CSV:
+Cập nhật dữ liệu quiz sau khi sửa CSV (local):
 
 ```bash
 python3 docs/build_vocab.py
 ```
 
-Bật GitHub Pages:
+### Deploy tự động (GitHub Actions)
 
-1. Repo **Settings → Pages**
-2. Source: **Deploy from a branch**
-3. Branch: `road-to-hsk3` (hoặc `main` nếu đã merge), folder **`/docs`**
-4. Save — site sẽ ở dạng `https://trpnhii.github.io/mastering-hsk/`
+Workflow: `.github/workflows/pages.yml` — build + deploy khi push nhánh **`road-to-hsk3`** (không cần `main`).
+
+Một lần duy nhất trên GitHub:
+
+1. **Settings → Pages → Build and deployment**
+2. **Source**: chọn **GitHub Actions** (không chọn Deploy from a branch)
+3. Push nhánh `road-to-hsk3` (hoặc chạy lại workflow bằng **Actions → Deploy flashcards → Run workflow**)
+4. Site: `https://trpnhii.github.io/mastering-hsk/`
